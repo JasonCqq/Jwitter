@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import "../Styles/Sidebar.scss";
 import {
   IoNotificationsOutline,
@@ -9,13 +9,11 @@ import { AiOutlineMessage, AiOutlineGithub } from "react-icons/ai";
 import { FaTwitter } from "react-icons/fa";
 import { useGlobalContext } from "./Context";
 import { signOut, getAuth } from "../Firebase.js";
+import { LogInContext } from "./Routeswitch";
 
-function Sidebar() {
+const Sidebar = () => {
   const { user, setUser } = useGlobalContext();
-
-  useEffect(() => {
-    console.log(user);
-  }, []);
+  const { handleCreateAccountClick } = useContext(LogInContext);
 
   const signOutUser = async () => {
     signOut(getAuth()).then(() => {
@@ -60,17 +58,23 @@ function Sidebar() {
 
       <div id="notifications-nav">
         <IoNotificationsOutline size={30} />
-        <a href="#">Notifications</a>
+        <a href="#" onClick={() => (user ? null : handleCreateAccountClick())}>
+          Notifications
+        </a>
       </div>
 
       <div id="messages-nav">
         <AiOutlineMessage size={30} />
-        <a href="#">Messages</a>
+        <a href="#" onClick={() => (user ? null : handleCreateAccountClick())}>
+          Messages
+        </a>
       </div>
 
       <div id="settings-nav">
         <IoSettingsOutline size={30} />
-        <a href="#">Settings</a>
+        <a href="#" onClick={() => (user ? null : handleCreateAccountClick())}>
+          Settings
+        </a>
       </div>
 
       <div id="github-nav">
@@ -84,11 +88,16 @@ function Sidebar() {
         </a>
       </div>
 
-      <button id="tweetButton">Publish a Tweet</button>
+      <button
+        id="tweetButton"
+        onClick={() => (user ? null : handleCreateAccountClick())}
+      >
+        Publish a Tweet
+      </button>
 
       {user ? profile() : null}
     </nav>
   );
-}
+};
 
 export default Sidebar;

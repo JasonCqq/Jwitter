@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../Styles/RightSidebar.scss";
 import { FcGoogle } from "react-icons/fc";
 import {
@@ -7,26 +7,25 @@ import {
   createAccountWindow,
 } from "./sharedFunctions";
 import { useGlobalContext } from "./Context";
+import { LogInContext } from "./Routeswitch";
 
-function RightSidebar() {
+const RightSidebar = () => {
   const { googleSignIn } = useAuthentication();
-  const [isCreateAccountOpen, setCreateAccountOpen] = useState(false);
-  const [isSignInOpen, setSignInOpen] = useState(false);
   const { user } = useGlobalContext();
 
-  const handleCreateAccountClick = () => {
-    setCreateAccountOpen(true);
-    setSignInOpen(false);
-  };
-
-  const handleSignInClick = () => {
-    setSignInOpen(true);
-    setCreateAccountOpen(false);
-  };
+  const {
+    handleCreateAccountClick,
+    handleSignInClick,
+    isCreateAccountOpen,
+    isSignInOpen,
+  } = useContext(LogInContext);
 
   const newToJwitter = () => {
     return (
       <>
+        {isCreateAccountOpen && !isSignInOpen && createAccountWindow()}
+        {isSignInOpen && !isCreateAccountOpen && signInWindow()}
+
         <div className="signup-container">
           <h1>New to Jwitter?</h1>
           <p>Sign up now to get your own personalized timeline!</p>
@@ -57,9 +56,6 @@ function RightSidebar() {
             <p>More...</p>
           </div>
         </div>
-
-        {isCreateAccountOpen && !isSignInOpen && createAccountWindow()}
-        {isSignInOpen && !isCreateAccountOpen && signInWindow()}
       </>
     );
   };
@@ -77,6 +73,6 @@ function RightSidebar() {
       {user ? signedIntoJwitter() : newToJwitter()}
     </div>
   );
-}
+};
 
 export default RightSidebar;

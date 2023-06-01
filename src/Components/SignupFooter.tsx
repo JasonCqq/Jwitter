@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import "../Styles/SignupFooter.scss";
 import { useGlobalContext } from "./Context";
+import { createAccountWindow, signInWindow } from "./sharedFunctions";
+import { LogInContext } from "./Routeswitch";
 
-function SignupFooter() {
+const SignupFooter = () => {
   const { user } = useGlobalContext();
+  const {
+    handleCreateAccountClick,
+    handleSignInClick,
+    isCreateAccountOpen,
+    isSignInOpen,
+  } = useContext(LogInContext);
 
   function showFooter() {
     return (
@@ -14,14 +22,28 @@ function SignupFooter() {
         </div>
 
         <div className="footer-buttons">
-          <button className="footer-login">Log In</button>
-          <button className="footer-signup">Sign Up</button>
+          <button onClick={() => handleSignInClick()} className="footer-login">
+            Log In
+          </button>
+          <button
+            onClick={() => handleCreateAccountClick()}
+            className="footer-signup"
+          >
+            Sign Up
+          </button>
         </div>
       </div>
     );
   }
 
-  return <>{user ? null : showFooter()}</>;
-}
+  return (
+    <>
+      {" "}
+      {isCreateAccountOpen && !isSignInOpen && createAccountWindow()}
+      {isSignInOpen && !isCreateAccountOpen && signInWindow()}
+      {user ? null : showFooter()}
+    </>
+  );
+};
 
 export default SignupFooter;

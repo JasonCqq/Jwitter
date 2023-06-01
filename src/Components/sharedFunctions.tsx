@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import {
   onAuthStateChanged,
   getAuth,
@@ -7,6 +7,9 @@ import {
 } from "../Firebase.js";
 import { useGlobalContext } from "./Context";
 import React from "react";
+import "../Styles/sharedFunctions.scss";
+import { RxCross2 } from "react-icons/rx";
+import { LogInContext } from "./Routeswitch";
 
 //Authentications
 export function useAuthentication() {
@@ -50,55 +53,95 @@ export function useAuthentication() {
   return { googleSignIn };
 }
 
-export function signInWindow() {
+export function createAccountWindow() {
+  const { closeBothWindows, handleSignInClick } = useContext(LogInContext);
+
   return (
-    <div id="createAccountWindowPopUp">
+    <div className="createAccountWindowPopUp">
       <div className="createAccount-window">
-        <h1>Create Account</h1>
-        <label htmlFor="email">Email</label>
-        <input
-          className="email-input"
-          name="email"
-          type="email"
-          placeholder="Email..."
-        ></input>
-        <label htmlFor="password">Password</label>
-        <input
-          className="password-input"
-          name="password"
-          type="password"
-          placeholder="Password..."
-        ></input>
-        <label htmlFor="passwordConfirmation">Confirm Password</label>
-        <input
-          className="passwordConfirmation-input"
-          name="passwordConfirmation"
-          type="password"
-          placeholder="Confirm Password..."
-        ></input>
+        <RxCross2
+          size={25}
+          className="exitButton"
+          onClick={() => closeBothWindows()}
+        />
+        <div className="innerWindow">
+          <h1>Create Your Account</h1>
+          <form>
+            <input
+              className="handle-input"
+              name="handle"
+              type="name"
+              placeholder="Handle"
+            ></input>
+
+            <input
+              className="email-input"
+              name="email"
+              type="email"
+              placeholder="Email"
+            ></input>
+
+            <input
+              className="password-input"
+              name="password"
+              type="password"
+              placeholder="Password"
+            ></input>
+            <input
+              className="passwordConfirmation-input"
+              name="passwordConfirmation"
+              type="password"
+              placeholder="Confirm Password"
+            ></input>
+
+            <button type="submit">Create Account</button>
+
+            <p>
+              Already have an account?{" "}
+              <strong onClick={() => handleSignInClick()}>Log in</strong>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
 
-export function createAccountWindow() {
+export function signInWindow() {
+  const { closeBothWindows, handleCreateAccountClick } =
+    useContext(LogInContext);
   return (
-    <div id="createAccountWindowPopUp">
+    <div className="createAccountWindowPopUp">
       <div className="createAccount-window">
-        <h1>Sign In</h1>
-        <label htmlFor="email">Email</label>
-        <input
-          className="email-input"
-          name="email"
-          type="email"
-          placeholder="Email..."
-        ></input>
-        <label htmlFor="password">Password</label>
-        <input
-          name="password"
-          type="password"
-          placeholder="Password..."
-        ></input>
+        <RxCross2
+          size={25}
+          className="exitButton"
+          onClick={() => closeBothWindows()}
+        />
+        <div className="innerWindow">
+          <h1>Sign In</h1>
+          <form>
+            <input
+              className="email-input"
+              name="email"
+              type="email"
+              placeholder="Email..."
+            ></input>
+            <input
+              name="password"
+              type="password"
+              placeholder="Password..."
+            ></input>
+            <button type="submit">Sign In</button>
+
+            <p>
+              Don&apos;t have an account?{" "}
+              <strong onClick={() => handleCreateAccountClick()}>
+                Create one
+              </strong>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
