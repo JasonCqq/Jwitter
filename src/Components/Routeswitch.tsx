@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
+import SignupFooter from "./SignupFooter";
 
 const RouteSwitch = () => {
   return (
@@ -12,6 +13,7 @@ const RouteSwitch = () => {
         <Route path="/" element={<Home />}></Route>
       </Routes>
       <RightSidebar />
+      <SignupFooter />
     </HashRouter>
   );
 };

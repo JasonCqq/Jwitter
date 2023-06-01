@@ -33,13 +33,14 @@
     button {
       padding: 10px;
       font-size: 0.85rem;
-      border-radius: 50px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       border: none;
-      border: 1.5px solid aquamarine;
+      border: 2px solid aquamarine;
+      height: 5vh;
 
       &:hover {
         background-color: aquamarine;

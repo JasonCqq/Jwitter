@@ -8,6 +8,33 @@ function Home() {
         {" "}
         <h1>Home</h1>
       </div>
+
+      <div id="tweets">
+        <div>
+          <h1>Test Tweet</h1>
+          <p>This is a test tweet. I repeat, this is a test tweet.</p>
+        </div>
+
+        <div>
+          <h1>Test Tweet</h1>
+          <p>This is a test tweet. I repeat, this is a test tweet.</p>
+        </div>
+
+        <div>
+          <h1>Test Tweet</h1>
+          <p>This is a test tweet. I repeat, this is a test tweet.</p>
+        </div>
+
+        <div>
+          <h1>Test Tweet</h1>
+          <p>This is a test tweet. I repeat, this is a test tweet.</p>
+        </div>
+
+        <div>
+          <h1>Test Tweet</h1>
+          <p>This is a test tweet. I repeat, this is a test tweet.</p>
+        </div>
+      </div>
     </div>
   );
 }

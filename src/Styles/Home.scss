@@ -1,16 +1,27 @@
 .main-home {
-  background-color: rgba($color: aquamarine, $alpha: 0.2);
+  background-color: rgba($color: aquamarine, $alpha: 0.19);
   height: 200vh;
   width: 45vw;
   margin-left: 25vw;
   margin-right: 30vw;
+  text-align: center;
 
   .info-bar {
     font-size: 1.5rem;
     background-color: white;
     position: fixed;
-    width: 100%;
+    width: 45vw;
     height: 4vh;
-    padding: 5px;
+    padding: 8px;
+  }
+
+  #tweets {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+
+    div {
+      height: 10vh;
+    }
   }
 }

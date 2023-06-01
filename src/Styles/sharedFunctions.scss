@@ -1,0 +1,20 @@
+#createAccountPopUpWindow {
+  position: fixed;
+  height: 100%;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.508);
+  top: 0;
+  left: 0;
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .createAccount-window {
+    background-color: white;
+    border-radius: 25px;
+    margin: auto;
+    width: 25vw;
+    height: 25vh;
+  }
+}
