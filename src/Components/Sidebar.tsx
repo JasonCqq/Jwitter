@@ -17,27 +17,27 @@ function Sidebar() {
 
       <div id="home-nav">
         <IoHomeOutline size={30} />
-        <p>Home</p>
+        <a href="#">Home</a>
       </div>
 
       <div id="notifications-nav">
         <IoNotificationsOutline size={30} />
-        <p>Notifications</p>
+        <a href="#">Notifications</a>
       </div>
 
       <div id="messages-nav">
         <AiOutlineMessage size={30} />
-        <p>Messages</p>
+        <a href="#">Messages</a>
       </div>
 
       <div id="settings-nav">
         <IoSettingsOutline size={30} />
-        <p>Settings</p>
+        <a href="#">Settings</a>
       </div>
 
       <div id="github-nav">
         <AiOutlineGithub size={30} />
-        <p>Github</p>
+        <a href="#">Github</a>
       </div>
 
       <button id="tweetButton">Tweet</button>

@@ -1,0 +1,67 @@
+.right-sidebar {
+  position: fixed;
+  margin-left: 70vw;
+  width: 29vw;
+  height: 100vh;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .signup-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    padding: 25px;
+    width: 75%;
+    gap: 1.25vw;
+
+    h1 {
+      font-size: 22.5px;
+      font-weight: bold;
+    }
+
+    p {
+      font-weight: 200;
+      font-size: 13px;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 0.85rem;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: none;
+      border: 1.5px solid aquamarine;
+
+      &:hover {
+        background-color: aquamarine;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .footer-notes {
+    display: flex;
+    font-size: 0.75rem;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 5vh;
+
+    div {
+      display: flex;
+      width: 25vw;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+    }
+  }
+}
