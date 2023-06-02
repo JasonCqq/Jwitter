@@ -129,50 +129,6 @@ video {
   vertical-align: baseline;
 }
 
-@media (max-width: 480px) {
-  html {
-    font-size: 14px;
-  }
-
-  button {
-    font-size: 12px;
-    padding: 4px 12px;
-  }
-}
-
-@media (max-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 6px 16px;
-  }
-}
-
-@media (max-width: 1024px) {
-  html {
-    font-size: 18px;
-  }
-
-  button {
-    font-size: 16px;
-    padding: 8px 20px;
-  }
-}
-
-@media (max-width: 1200px) {
-  html {
-    font-size: 20px;
-  }
-
-  button {
-    font-size: 18px;
-    padding: 10px 24px;
-  }
-}
-
 /* HTML5 display-role reset for older browsers */
 a {
   text-decoration: none;
@@ -212,4 +168,103 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+
+    #sidebar {
+      font-size: 10px;
+
+      button {
+        font-size: 12px;
+        padding: 4px 5px;
+      }
+
+      #tweetButton {
+        padding: 4px 5px;
+      }
+
+      .signOutButton {
+        font-size: 10px;
+      }
+
+      a {
+        font-size: 0.01px;
+      }
+    }
+
+    .right-sidebar {
+      display: none;
+    }
+
+    .main-home {
+      width: 74vw;
+    }
+
+    .footer-bar {
+      font-size: 10px;
+      .footer-text {
+        h1 {
+          font-size: 18px;
+          margin-left: 2vh;
+        }
+
+        p {
+          font-size: 0.01px;
+        }
+      }
+    }
+
+    .createAccountWindowPopUp {
+      .createAccount-window {
+        width: 80vw;
+        height: 75vh;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    #sidebar {
+      font-size: 10px;
+
+      button {
+        font-size: 12px;
+        padding: 4px 5px;
+      }
+
+      #tweetButton {
+        padding: 4px 5px;
+      }
+
+      .signOutButton {
+        font-size: 10px;
+      }
+
+      a {
+        font-size: 0.01px;
+      }
+    }
+    .createAccountWindowPopUp {
+      .createAccount-window {
+        width: 80vw;
+        height: 75vh;
+      }
+    }
+
+    .right-sidebar {
+      display: none;
+    }
+
+    .main-home {
+      width: 74vw;
+    }
+
+    .footer-bar {
+      height: 12vh;
+    }
+  }
 }

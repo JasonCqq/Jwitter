@@ -5,7 +5,6 @@ import "../Styles/Loading.scss";
 
 const Loading = () => {
   const { isLoading } = useContext(LogInContext);
-
   return (
     <div className="sweet-loading">
       <ClipLoader

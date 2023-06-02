@@ -1,7 +1,7 @@
 .right-sidebar {
   position: fixed;
-  margin-left: 70vw;
-  width: 29vw;
+  margin-left: 75vw;
+  width: 24vw;
   height: 100vh;
   top: 0;
   display: flex;
@@ -48,6 +48,42 @@
     }
   }
 
+  .trending-tab {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    width: 100%;
+    gap: 2vh;
+
+    .recentevents-tab {
+      display: flex;
+      flex-direction: column;
+      margin: auto;
+      margin-top: 5vh;
+      width: 85%;
+      height: 60vh;
+      gap: 5vh;
+
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    input {
+      border: none;
+      border-bottom: 2px solid aquamarine;
+      font-size: 1.25rem;
+      width: 22vw;
+      padding: 8px;
+      margin: auto;
+      margin-top: 2vh;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
   .footer-notes {
     display: flex;
     font-size: 0.75rem;
@@ -57,7 +93,7 @@
 
     div {
       display: flex;
-      width: 25vw;
+      width: 20vw;
       text-align: center;
       justify-content: center;
       align-items: center;

@@ -1,16 +1,16 @@
 .main-home {
   background-color: rgba($color: aquamarine, $alpha: 0.19);
   height: 200vh;
-  width: 45vw;
+  width: 50vw;
   margin-left: 25vw;
   margin-right: 30vw;
   text-align: center;
 
   .info-bar {
     font-size: 1.5rem;
-    background-color: white;
+    background: rgba($color: white, $alpha: 1);
     position: fixed;
-    width: 45vw;
+    width: 50vw;
     height: 4vh;
     padding: 8px;
   }
@@ -19,6 +19,7 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto;
+    padding-top: 7vh;
 
     div {
       height: 10vh;

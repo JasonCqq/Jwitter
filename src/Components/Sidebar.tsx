@@ -1,11 +1,11 @@
 import React, { useEffect, useContext } from "react";
 import "../Styles/Sidebar.scss";
+import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
 import {
-  IoNotificationsOutline,
-  IoHomeOutline,
-  IoSettingsOutline,
-} from "react-icons/io5";
-import { AiOutlineMessage, AiOutlineGithub } from "react-icons/ai";
+  AiOutlineMessage,
+  AiOutlineGithub,
+  AiOutlineNotification,
+} from "react-icons/ai";
 import { FaTwitter } from "react-icons/fa";
 import { useGlobalContext } from "./AuthContext";
 import { signOut, getAuth } from "../Firebase.js";
@@ -55,7 +55,7 @@ const Sidebar = () => {
   const openAccountAlert = () => {
     return (
       <div>
-        <p>Log in or create an account to use the functionalitys!</p>
+        <p>Log in or create an account to use the functionalities!</p>
       </div>
     );
   };
@@ -73,8 +73,8 @@ const Sidebar = () => {
         </div>
 
         <div id="notifications-nav">
-          <IoNotificationsOutline size={30} />
-          <a href="#">Notifications</a>
+          <AiOutlineNotification size={30} />
+          <a href="#">Notices</a>
         </div>
 
         <div id="messages-nav">
@@ -98,7 +98,7 @@ const Sidebar = () => {
           </a>
         </div>
 
-        <button id="tweetButton">Publish a Tweet</button>
+        <button id="tweetButton">Tweet</button>
 
         {user ? profile() : openAccountAlert()}
       </nav>

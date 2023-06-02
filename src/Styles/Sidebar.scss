@@ -36,8 +36,10 @@ nav {
     width: 20vw;
     gap: 2vw;
 
-    a:hover {
-      font-weight: 600;
+    &:hover {
+      color: aquamarine;
+      font-weight: bold;
+      cursor: pointer;
     }
   }
 

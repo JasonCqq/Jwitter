@@ -4,13 +4,15 @@ import { FcGoogle } from "react-icons/fc";
 import { useAuthentication } from "./sharedFunctions";
 import { SignInWindow, CreateAccountWindow } from "./sharedFunctions";
 import { LogInContext } from "./Routeswitch";
+import { useGlobalContext } from "./AuthContext";
 
 const RightSidebar = () => {
   const { googleSignIn } = useAuthentication();
   const { toggleWindow, toggleSignIn } = useContext(LogInContext);
+  const { user } = useGlobalContext();
 
-  return (
-    <div className="right-sidebar">
+  const signUp = () => {
+    return (
       <div className="signup-container">
         <h1>New to Jwitter?</h1>
         <p>Sign up now to get your own personalized timeline!</p>
@@ -27,6 +29,47 @@ const RightSidebar = () => {
           .
         </p>
       </div>
+    );
+  };
+
+  const trending = () => {
+    return (
+      <div className="trending-tab">
+        <input placeholder="Search Jwitter..."></input>
+        <div className="recentevents-tab">
+          <h1>What&apos;s happening</h1>
+          <div>
+            <h2>Electronics</h2>
+            <p>12.5k Tweets</p>
+          </div>
+          <div>
+            <h2>Gaming</h2>
+            <p>12.5k Tweets</p>
+          </div>
+          <div>
+            <h2>Anime</h2>
+            <p>12.5k Tweets</p>
+          </div>
+          <div>
+            <h2>Movie</h2>
+            <p>12.5k Tweets</p>
+          </div>
+          <div>
+            <h2>John Doe</h2>
+            <p>12.5k Tweets</p>
+          </div>
+          <div>
+            <h2>Breaking News</h2>
+            <p>12.5k Tweets</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="right-sidebar">
+      {user ? trending() : signUp()}
 
       <div className="footer-notes">
         <div>

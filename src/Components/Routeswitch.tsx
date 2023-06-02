@@ -53,6 +53,7 @@ const RouteSwitch = () => {
         }}
       >
         <HashRouter>
+          {isLoading ? <Loading /> : null}
           {createWindowOpen && !signIn ? <CreateAccountWindow /> : null}
           {!createWindowOpen && signIn ? <SignInWindow /> : null}
           <Sidebar />
