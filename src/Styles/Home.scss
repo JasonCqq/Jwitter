@@ -1,18 +1,21 @@
 .main-home {
-  background-color: rgba($color: aquamarine, $alpha: 0.19);
   height: 200vh;
   width: 50vw;
   margin-left: 25vw;
-  margin-right: 30vw;
-  text-align: center;
+  margin-right: 25vw;
+  background-color: #15202b;
+  border-left: 1px solid #38444d;
+  border-right: 1px solid #38444d;
+  color: white;
 
   .info-bar {
-    font-size: 1.5rem;
-    background: rgba($color: white, $alpha: 1);
+    font-size: 1.25rem;
+    background-color: #15202b;
     position: fixed;
-    width: 50vw;
+    width: 10%;
     height: 4vh;
-    padding: 8px;
+    border-bottom: 1px solid #38444d;
+    padding: 10px;
   }
 
   #tweets {
@@ -23,6 +26,7 @@
 
     div {
       height: 10vh;
+      border-bottom: 1px solid #38444d;
     }
   }
 }

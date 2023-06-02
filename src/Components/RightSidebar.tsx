@@ -40,30 +40,6 @@ const RightSidebar = () => {
 
         <div className="recentevents-tab">
           <h1>What&apos;s happening</h1>
-          <div>
-            <h2>Electronics</h2>
-            <p>12.5k Tweets</p>
-          </div>
-          <div>
-            <h2>Gaming</h2>
-            <p>12.5k Tweets</p>
-          </div>
-          <div>
-            <h2>Anime</h2>
-            <p>12.5k Tweets</p>
-          </div>
-          <div>
-            <h2>Movie</h2>
-            <p>12.5k Tweets</p>
-          </div>
-          <div>
-            <h2>John Doe</h2>
-            <p>12.5k Tweets</p>
-          </div>
-          <div>
-            <h2>Breaking News</h2>
-            <p>12.5k Tweets</p>
-          </div>
         </div>
       </div>
     );

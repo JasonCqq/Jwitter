@@ -27,6 +27,8 @@ nav {
     a {
       display: flex;
       align-items: center;
+      color: white;
+      font-weight: 500;
     }
 
     span {
@@ -35,19 +37,19 @@ nav {
   }
 
   .sidebarItem {
+    color: #7856ff;
     &:hover {
-      color: rgba(127, 255, 212, 0.807);
-
+      color: #7856ff;
       a {
-        color: rgba(127, 255, 212, 0.807);
+        color: #7856ff;
       }
     }
   }
 
   #tweetButton {
     align-self: center;
-    color: black;
-    background-color: aquamarine;
+    color: white;
+    background-color: #7856ff;
     padding: 2.25vh 7vw;
     border-radius: 50px;
     font-size: 1.1rem;
@@ -57,51 +59,57 @@ nav {
     &:hover {
       cursor: pointer;
       font-weight: 600;
-      background-color: rgba(127, 255, 221, 0.896);
+      background-color: #653ffc;
     }
   }
 
-  #profile-nav {
-    padding: 10px;
+  .profile-wrapper {
+    display: flex;
+    flex-direction: column;
     border-radius: 50px;
+    padding-left: 10px;
+    width: 20vw;
+    color: white;
+    margin-right: 4vh;
+    margin-top: -2vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #653ffc1a;
 
-    .user-handle {
-      font-weight: lighter;
-      margin-top: 5px;
+    #profile-nav {
+      padding: 20px 10px;
+
+      .user-handle {
+        font-weight: lighter;
+        font-size: 0.75rem;
+        width: 3vw;
+      }
+
+      .profile-avatar {
+        border-radius: 50px;
+        height: 50px;
+      }
+
+      p {
+        font-size: 15px;
+        font-weight: 600;
+        width: 15vw;
+      }
     }
 
-    &:hover {
-      background-color: rgba(127, 255, 212, 0.223);
-    }
-
-    .profile-avatar {
-      border-radius: 50px;
-      height: 50px;
-    }
-
-    p {
-      padding-left: 2vw;
-      font-size: 15px;
-      font-weight: 600;
-    }
-  }
-
-  .signOutContainer {
-    width: 22vw;
-
-    span {
-      background-color: none;
-    }
-
-    button {
+    .signOutButton {
       border: none;
-      font-size: 1.2rem;
+      font-size: 1rem;
       border-radius: 50px;
-      padding: 10px 20px;
+      padding: 5px 20px;
+      margin-bottom: 3vh;
+      background: none;
+      color: white;
+
       &:hover {
         cursor: pointer;
-        font-weight: 500;
-        background-color: rgba(0, 208, 255, 0.1);
+        font-weight: 600;
+        text-decoration: underline;
       }
     }
   }

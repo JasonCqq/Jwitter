@@ -9,9 +9,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  color: white;
 
   .createAccount-window {
-    background-color: white;
+    background-color: #15202b;
     margin: auto;
     width: 35vw;
     height: 75vh;
@@ -20,7 +21,7 @@
       padding: 15px;
       &:hover {
         cursor: pointer;
-        background-color: aquamarine;
+        background-color: #7856ff;
       }
     }
 
@@ -39,17 +40,18 @@
       form {
         display: flex;
         flex-direction: column;
-        gap: 2vh;
+        gap: 4vh;
 
         input {
           font-size: 1.25rem;
           height: 6vh;
           width: 100%;
           border: none;
+          background-color: #273340;
           &:focus {
             border: none;
             outline: none;
-            border-bottom: 2px solid aquamarine;
+            border-bottom: 2px solid #7856ff;
           }
         }
 
@@ -58,11 +60,11 @@
           width: 100%;
           font-size: 1.25rem;
           border: none;
-          background-color: aquamarine;
+          background-color: #7856ff;
 
           &:hover {
             cursor: pointer;
-            border: 1px solid black;
+            border: 1px solid white;
           }
         }
       }

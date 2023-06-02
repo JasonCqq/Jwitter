@@ -1,5 +1,5 @@
 .footer-bar {
-  background-color: aquamarine;
+  background-color: #7856ff;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -45,8 +45,9 @@
     }
 
     .footer-signup:hover {
-      background-color: aquamarine;
+      background-color: #7856ff;
       border: 1px solid white;
+      color: black;
     }
   }
 }

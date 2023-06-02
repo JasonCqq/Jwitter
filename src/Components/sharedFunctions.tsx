@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import "../Styles/sharedFunctions.scss";
 import { RxCross2 } from "react-icons/rx";
 import { LogInContext } from "./Routeswitch";
+import autoAnimate from "@formkit/auto-animate";
 
 //Authentications
 function useAuthentication() {
@@ -70,7 +71,6 @@ function CreateAccountWindow() {
   const auth = getAuth();
 
   const formSubmit = (e: FormEvent<HTMLFormElement>) => {
-    console.log(password, passwordConfirmation);
     e.preventDefault();
     if (password !== passwordConfirmation) {
       return;

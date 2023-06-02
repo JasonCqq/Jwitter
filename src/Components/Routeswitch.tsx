@@ -4,7 +4,6 @@ import Home from "./Home";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
 import SignupFooter from "./SignupFooter";
-import Loading from "./Loading";
 import { CreateAccountWindow, SignInWindow } from "./sharedFunctions";
 import Notices from "./Notices";
 import Profile from "./Profile";
@@ -12,23 +11,16 @@ import Settings from "./Settings";
 import Messages from "./Messages";
 
 export const LogInContext = createContext({
-  isLoading: false,
   createWindowOpen: false,
   signIn: false,
-  toggleLoading: () => {},
   toggleWindow: () => {},
   toggleSignIn: () => {},
   closeWindows: () => {},
 });
 
 const RouteSwitch = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [createWindowOpen, setCreateWindowOpen] = useState(false);
   const [signIn, setSignIn] = useState(false);
-
-  const toggleLoading = () => {
-    setIsLoading((prevLoading) => !prevLoading);
-  };
 
   const toggleWindow = () => {
     setCreateWindowOpen((prevWindow) => !prevWindow);
@@ -47,10 +39,8 @@ const RouteSwitch = () => {
     <>
       <LogInContext.Provider
         value={{
-          isLoading,
           createWindowOpen,
           signIn,
-          toggleLoading,
           toggleWindow,
           toggleSignIn,
           closeWindows,

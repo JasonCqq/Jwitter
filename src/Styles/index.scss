@@ -6,6 +6,7 @@ body {
     "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #15202b;
 }
 
 code {
@@ -37,6 +38,15 @@ code {
    v2.0 | 20110126
    License: none (public domain)
 */
+
+.example-appear {
+  opacity: 0.01;
+}
+
+.example-appear.example-appear-active {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
 
 html,
 body,

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../Styles/Sidebar.scss";
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
 import {
@@ -9,13 +9,11 @@ import {
 import { FaTwitter } from "react-icons/fa";
 import { useGlobalContext } from "./AuthContext";
 import { signOut, getAuth } from "../Firebase.js";
-import { LogInContext } from "./Routeswitch";
-import Loading from "./Loading";
 import { Link } from "react-router-dom";
+import autoAnimate from "@formkit/auto-animate";
 
 const Sidebar = () => {
   const { user, setUser } = useGlobalContext();
-  const { isLoading, toggleLoading } = useContext(LogInContext);
 
   const signOutUser = async () => {
     signOut(getAuth()).then(() => {
@@ -23,34 +21,42 @@ const Sidebar = () => {
     });
   };
 
+  const [reveal, setReveal] = useState(false);
+  const dropdown = useRef(null);
+
   useEffect(() => {
-    toggleLoading();
-    setTimeout(() => {
-      toggleLoading();
-    }, 1000);
-  }, []);
+    dropdown.current && autoAnimate(dropdown.current);
+  }, [dropdown]);
+
+  const show = () => setReveal(!reveal);
 
   const profile = () => {
     return (
       <>
-        <div id="profile-nav">
-          <Link to="/profile">
+        <div className="profile-wrapper" ref={dropdown} onClick={show}>
+          <div id="profile-nav">
             <img
               className="profile-avatar"
               src={user?.photoURL ?? ""}
               alt="User Avatar"
             ></img>
-            <p>
-              {user?.displayName} <br></br>{" "}
-              <span className="user-handle">@temp-handle1</span>
-            </p>
-          </Link>
-        </div>
+            <div>
+              <p>
+                {user?.displayName} <br></br> @temp-handle1
+              </p>
+            </div>
+          </div>
 
-        <div className="signOutContainer">
-          <button onClick={() => signOutUser()} className="signOutButton">
-            Sign Out
-          </button>
+          {reveal && (
+            <div>
+              <button onClick={() => signOutUser()} className="signOutButton">
+                Sign Out
+              </button>
+              <Link to="/profile" className="signOutButton">
+                Profile
+              </Link>
+            </div>
+          )}
         </div>
       </>
     );
@@ -60,7 +66,7 @@ const Sidebar = () => {
     return (
       <nav id="sidebar">
         <div>
-          <FaTwitter size={30} color="aquamarine" />
+          <FaTwitter size={30} color="#7856FF" />
         </div>
 
         <div className="sidebarItem">
@@ -110,7 +116,7 @@ const Sidebar = () => {
     );
   };
 
-  return <>{isLoading ? null : sideBarContent()}</>;
+  return <>{sideBarContent()}</>;
 };
 
 export default Sidebar;
