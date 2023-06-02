@@ -14,22 +14,6 @@ nav {
   align-items: flex-end;
   gap: 3vw;
 
-  #tweetButton {
-    align-self: center;
-    color: black;
-    background-color: aquamarine;
-    padding: 15px 50px;
-    font-size: 1rem;
-    border: none;
-    font-weight: 200;
-
-    &:hover {
-      border: 1px solid black;
-      cursor: pointer;
-      font-weight: 600;
-    }
-  }
-
   div {
     display: flex;
     align-items: center;
@@ -37,43 +21,88 @@ nav {
     gap: 2vw;
 
     &:hover {
-      color: aquamarine;
-      font-weight: bold;
       cursor: pointer;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+    }
+
+    span {
+      padding-left: 20px;
+    }
+  }
+
+  .sidebarItem {
+    &:hover {
+      color: rgba(127, 255, 212, 0.807);
+
+      a {
+        color: rgba(127, 255, 212, 0.807);
+      }
+    }
+  }
+
+  #tweetButton {
+    align-self: center;
+    color: black;
+    background-color: aquamarine;
+    padding: 2.25vh 7vw;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    border: none;
+    font-weight: 600;
+
+    &:hover {
+      cursor: pointer;
+      font-weight: 600;
+      background-color: rgba(127, 255, 221, 0.896);
     }
   }
 
   #profile-nav {
-    margin-top: 2vh;
     padding: 10px;
-    border-bottom: 1px solid aquamarine;
+    border-radius: 50px;
+
+    .user-handle {
+      font-weight: lighter;
+      margin-top: 5px;
+    }
+
+    &:hover {
+      background-color: rgba(127, 255, 212, 0.223);
+    }
 
     .profile-avatar {
       border-radius: 50px;
       height: 50px;
     }
 
-    span {
-      height: 50px;
-      width: 50px;
-      background-color: #bbb;
-      display: inline-block;
-    }
-
     p {
+      padding-left: 2vw;
       font-size: 15px;
+      font-weight: 600;
     }
   }
 
-  .signOutButton {
-    border: none;
-    font-size: 1.2rem;
+  .signOutContainer {
+    width: 22vw;
 
-    &:hover {
-      cursor: pointer;
-      color: aquamarine;
-      font-weight: bold;
-      text-decoration: underline;
+    span {
+      background-color: none;
+    }
+
+    button {
+      border: none;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      padding: 10px 20px;
+      &:hover {
+        cursor: pointer;
+        font-weight: 500;
+        background-color: rgba(0, 208, 255, 0.1);
+      }
     }
   }
 }

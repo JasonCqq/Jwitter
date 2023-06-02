@@ -11,6 +11,7 @@ import { useGlobalContext } from "./AuthContext";
 import { signOut, getAuth } from "../Firebase.js";
 import { LogInContext } from "./Routeswitch";
 import Loading from "./Loading";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const { user, setUser } = useGlobalContext();
@@ -33,14 +34,17 @@ const Sidebar = () => {
     return (
       <>
         <div id="profile-nav">
-          <img
-            className="profile-avatar"
-            src={user?.photoURL ?? ""}
-            alt="User Avatar"
-          ></img>
-          <p>
-            {user?.displayName} <br></br>@temp-handle1
-          </p>
+          <Link to="/profile">
+            <img
+              className="profile-avatar"
+              src={user?.photoURL ?? ""}
+              alt="User Avatar"
+            ></img>
+            <p>
+              {user?.displayName} <br></br>{" "}
+              <span className="user-handle">@temp-handle1</span>
+            </p>
+          </Link>
         </div>
 
         <div className="signOutContainer">
@@ -52,14 +56,6 @@ const Sidebar = () => {
     );
   };
 
-  const openAccountAlert = () => {
-    return (
-      <div>
-        <p>Log in or create an account to use the functionalities!</p>
-      </div>
-    );
-  };
-
   const sideBarContent = () => {
     return (
       <nav id="sidebar">
@@ -67,27 +63,36 @@ const Sidebar = () => {
           <FaTwitter size={30} color="aquamarine" />
         </div>
 
-        <div id="home-nav">
-          <IoHomeOutline size={30} />
-          <a href="#">Home</a>
+        <div className="sidebarItem">
+          <Link to="/">
+            {" "}
+            <IoHomeOutline size={30} />
+            <span>Home</span>
+          </Link>
         </div>
 
-        <div id="notifications-nav">
-          <AiOutlineNotification size={30} />
-          <a href="#">Notices</a>
+        <div className="sidebarItem">
+          <Link to="/notices">
+            <AiOutlineNotification size={30} />
+            <span>Notices</span>
+          </Link>
         </div>
 
-        <div id="messages-nav">
-          <AiOutlineMessage size={30} />
-          <a href="#">Messages</a>
+        <div className="sidebarItem">
+          <Link to="/messages">
+            <AiOutlineMessage size={30} />
+            <span>Messages</span>
+          </Link>
         </div>
 
-        <div id="settings-nav">
-          <IoSettingsOutline size={30} />
-          <a href="#">Settings</a>
+        <div className="sidebarItem">
+          <Link to="/settings">
+            <IoSettingsOutline size={30} />
+            <span>Settings</span>
+          </Link>
         </div>
 
-        <div id="github-nav">
+        <div className="sidebarItem">
           <AiOutlineGithub size={30} />
           <a
             href="https://github.com/jason21715/Jwitter"
@@ -100,7 +105,7 @@ const Sidebar = () => {
 
         <button id="tweetButton">Tweet</button>
 
-        {user ? profile() : openAccountAlert()}
+        {user ? profile() : null}
       </nav>
     );
   };

@@ -47,7 +47,6 @@
       }
     }
   }
-
   .trending-tab {
     display: grid;
     grid-template-columns: 1fr;
@@ -69,21 +68,23 @@
       }
     }
 
-    input {
-      border: none;
-      border-bottom: 2px solid aquamarine;
-      font-size: 1.25rem;
-      width: 22vw;
-      padding: 8px;
-      margin: auto;
+    .search-bar {
       margin-top: 2vh;
+      margin-left: 2vh;
 
-      &:focus {
-        outline: none;
+      input {
+        border: none;
+        border-bottom: 2px solid aquamarine;
+        font-size: 1.25rem;
+        width: 15vw;
+        margin-left: 1vw;
+
+        &:focus {
+          outline: none;
+        }
       }
     }
   }
-
   .footer-notes {
     display: flex;
     font-size: 0.75rem;

@@ -6,6 +6,10 @@ import RightSidebar from "./RightSidebar";
 import SignupFooter from "./SignupFooter";
 import Loading from "./Loading";
 import { CreateAccountWindow, SignInWindow } from "./sharedFunctions";
+import Notices from "./Notices";
+import Profile from "./Profile";
+import Settings from "./Settings";
+import Messages from "./Messages";
 
 export const LogInContext = createContext({
   isLoading: false,
@@ -53,12 +57,15 @@ const RouteSwitch = () => {
         }}
       >
         <HashRouter>
-          {isLoading ? <Loading /> : null}
           {createWindowOpen && !signIn ? <CreateAccountWindow /> : null}
           {!createWindowOpen && signIn ? <SignInWindow /> : null}
           <Sidebar />
           <Routes>
             <Route path="/" element={<Home />}></Route>
+            <Route path="/notices" element={<Notices />}></Route>
+            <Route path="/messages" element={<Messages />}></Route>
+            <Route path="/settings" element={<Settings />}></Route>
+            <Route path="/profile" element={<Profile />}></Route>
           </Routes>
           <RightSidebar />
           <SignupFooter />

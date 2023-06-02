@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import "../Styles/RightSidebar.scss";
 import { FcGoogle } from "react-icons/fc";
 import { useAuthentication } from "./sharedFunctions";
-import { SignInWindow, CreateAccountWindow } from "./sharedFunctions";
 import { LogInContext } from "./Routeswitch";
 import { useGlobalContext } from "./AuthContext";
 
@@ -35,7 +34,10 @@ const RightSidebar = () => {
   const trending = () => {
     return (
       <div className="trending-tab">
-        <input placeholder="Search Jwitter..."></input>
+        <div className="search-bar">
+          <input placeholder="Search Jwitter..."></input>
+        </div>
+
         <div className="recentevents-tab">
           <h1>What&apos;s happening</h1>
           <div>
