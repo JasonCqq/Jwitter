@@ -7,20 +7,27 @@ import {
 } from "react-icons/io5";
 import { AiOutlineMessage, AiOutlineGithub } from "react-icons/ai";
 import { FaTwitter } from "react-icons/fa";
-import { useGlobalContext } from "./Context";
+import { useGlobalContext } from "./AuthContext";
 import { signOut, getAuth } from "../Firebase.js";
 import { LogInContext } from "./Routeswitch";
+import Loading from "./Loading";
 
 const Sidebar = () => {
   const { user, setUser } = useGlobalContext();
-  const { handleCreateAccountClick } = useContext(LogInContext);
+  const { isLoading, toggleLoading } = useContext(LogInContext);
 
   const signOutUser = async () => {
     signOut(getAuth()).then(() => {
       setUser(null);
-      console.log(user);
     });
   };
+
+  useEffect(() => {
+    toggleLoading();
+    setTimeout(() => {
+      toggleLoading();
+    }, 1000);
+  }, []);
 
   const profile = () => {
     return (
@@ -45,59 +52,60 @@ const Sidebar = () => {
     );
   };
 
-  return (
-    <nav id="sidebar">
+  const openAccountAlert = () => {
+    return (
       <div>
-        <FaTwitter size={30} color="aquamarine" />
+        <p>Log in or create an account to use the functionalitys!</p>
       </div>
+    );
+  };
 
-      <div id="home-nav">
-        <IoHomeOutline size={30} />
-        <a href="#">Home</a>
-      </div>
+  const sideBarContent = () => {
+    return (
+      <nav id="sidebar">
+        <div>
+          <FaTwitter size={30} color="aquamarine" />
+        </div>
 
-      <div id="notifications-nav">
-        <IoNotificationsOutline size={30} />
-        <a href="#" onClick={() => (user ? null : handleCreateAccountClick())}>
-          Notifications
-        </a>
-      </div>
+        <div id="home-nav">
+          <IoHomeOutline size={30} />
+          <a href="#">Home</a>
+        </div>
 
-      <div id="messages-nav">
-        <AiOutlineMessage size={30} />
-        <a href="#" onClick={() => (user ? null : handleCreateAccountClick())}>
-          Messages
-        </a>
-      </div>
+        <div id="notifications-nav">
+          <IoNotificationsOutline size={30} />
+          <a href="#">Notifications</a>
+        </div>
 
-      <div id="settings-nav">
-        <IoSettingsOutline size={30} />
-        <a href="#" onClick={() => (user ? null : handleCreateAccountClick())}>
-          Settings
-        </a>
-      </div>
+        <div id="messages-nav">
+          <AiOutlineMessage size={30} />
+          <a href="#">Messages</a>
+        </div>
 
-      <div id="github-nav">
-        <AiOutlineGithub size={30} />
-        <a
-          href="https://github.com/jason21715/Jwitter"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Github
-        </a>
-      </div>
+        <div id="settings-nav">
+          <IoSettingsOutline size={30} />
+          <a href="#">Settings</a>
+        </div>
 
-      <button
-        id="tweetButton"
-        onClick={() => (user ? null : handleCreateAccountClick())}
-      >
-        Publish a Tweet
-      </button>
+        <div id="github-nav">
+          <AiOutlineGithub size={30} />
+          <a
+            href="https://github.com/jason21715/Jwitter"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Github
+          </a>
+        </div>
 
-      {user ? profile() : null}
-    </nav>
-  );
+        <button id="tweetButton">Publish a Tweet</button>
+
+        {user ? profile() : openAccountAlert()}
+      </nav>
+    );
+  };
+
+  return <>{isLoading ? null : sideBarContent()}</>;
 };
 
 export default Sidebar;

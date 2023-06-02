@@ -19,12 +19,12 @@ nav {
     color: black;
     background-color: aquamarine;
     padding: 15px 50px;
-    border-radius: 10px;
     font-size: 1rem;
     border: none;
     font-weight: 200;
 
     &:hover {
+      border: 1px solid black;
       cursor: pointer;
       font-weight: 600;
     }
@@ -36,13 +36,15 @@ nav {
     width: 20vw;
     gap: 2vw;
 
-    &:hover {
+    a:hover {
       font-weight: 600;
     }
   }
 
   #profile-nav {
     margin-top: 2vh;
+    padding: 10px;
+    border-bottom: 1px solid aquamarine;
 
     .profile-avatar {
       border-radius: 50px;
@@ -53,7 +55,6 @@ nav {
       height: 50px;
       width: 50px;
       background-color: #bbb;
-      border-radius: 50%;
       display: inline-block;
     }
 

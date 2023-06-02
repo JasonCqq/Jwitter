@@ -12,7 +12,6 @@
 
   .createAccount-window {
     background-color: white;
-    border-radius: 10px;
     margin: auto;
     width: 35vw;
     height: 75vh;
@@ -22,7 +21,6 @@
       &:hover {
         cursor: pointer;
         background-color: aquamarine;
-        border-top-left-radius: 10px;
       }
     }
 

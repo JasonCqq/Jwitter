@@ -1,49 +1,60 @@
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
 import SignupFooter from "./SignupFooter";
+import Loading from "./Loading";
+import { CreateAccountWindow, SignInWindow } from "./sharedFunctions";
 
 export const LogInContext = createContext({
-  isCreateAccountOpen: false,
-  isSignInOpen: false,
-  handleCreateAccountClick: () => {},
-  handleSignInClick: () => {},
-  closeBothWindows: () => {},
+  isLoading: false,
+  createWindowOpen: false,
+  signIn: false,
+  toggleLoading: () => {},
+  toggleWindow: () => {},
+  toggleSignIn: () => {},
+  closeWindows: () => {},
 });
 
 const RouteSwitch = () => {
-  const [isCreateAccountOpen, setCreateAccountOpen] = useState(false);
-  const [isSignInOpen, setSignInOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [createWindowOpen, setCreateWindowOpen] = useState(false);
+  const [signIn, setSignIn] = useState(false);
 
-  const handleCreateAccountClick = () => {
-    setCreateAccountOpen(true);
-    setSignInOpen(false);
+  const toggleLoading = () => {
+    setIsLoading((prevLoading) => !prevLoading);
   };
 
-  const handleSignInClick = () => {
-    setSignInOpen(true);
-    setCreateAccountOpen(false);
+  const toggleWindow = () => {
+    setCreateWindowOpen((prevWindow) => !prevWindow);
   };
 
-  const closeBothWindows = () => {
-    setSignInOpen(false);
-    setCreateAccountOpen(false);
+  const toggleSignIn = () => {
+    setSignIn((prevSignIn) => !prevSignIn);
+  };
+
+  const closeWindows = () => {
+    setSignIn(false);
+    setCreateWindowOpen(false);
   };
 
   return (
     <>
       <LogInContext.Provider
         value={{
-          isCreateAccountOpen,
-          isSignInOpen,
-          handleCreateAccountClick,
-          handleSignInClick,
-          closeBothWindows,
+          isLoading,
+          createWindowOpen,
+          signIn,
+          toggleLoading,
+          toggleWindow,
+          toggleSignIn,
+          closeWindows,
         }}
       >
         <HashRouter>
+          {createWindowOpen && !signIn ? <CreateAccountWindow /> : null}
+          {!createWindowOpen && signIn ? <SignInWindow /> : null}
           <Sidebar />
           <Routes>
             <Route path="/" element={<Home />}></Route>
