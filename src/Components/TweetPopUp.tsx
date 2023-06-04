@@ -37,7 +37,8 @@ const TweetPopUp = () => {
     const month = date.getMonth();
     const day = date.getDate();
     const hour = date.getHours();
-    const minute = date.getMinutes();
+    const minute =
+      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
 
     const newHour = hour < 12 ? "AM" : "PM";
 

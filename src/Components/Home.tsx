@@ -11,19 +11,38 @@ function Home() {
   const { user } = useGlobalContext();
   const [tweets, setTweets] = useState<any[]>([]);
 
-  // !!! REMEMBER TO SET USER.UID TO ALL USERS SO YOU ARE ABLE TO DISPLAY OTHER USERS TWEETS
   const displayData = async () => {
     const db = getFirestore(app);
-    const querySnapshot = await getDocs(
-      collection(db, "users", `${user?.uid}`, "tweets")
-    );
+
+    const collectionSnapshot = await getDocs(collection(db, "users"));
     const queries: any = [];
 
-    querySnapshot.forEach((doc) => {
-      queries.push(doc.data());
-    });
+    for (const userDoc of collectionSnapshot.docs) {
+      const userId = userDoc.id;
+
+      const querySnapshot = await getDocs(
+        collection(db, "users", userId, "tweets")
+      );
+
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+          queries.push(doc.data());
+        });
+      }
+    }
 
     setTweets(queries);
+  };
+
+  const mapImages = (image: any[]) => {
+    console.log;
+    return (
+      <>
+        {image.map((img, index) => (
+          <img key={index} src={img.images} />
+        ))}
+      </>
+    );
   };
 
   useEffect(() => {
@@ -43,12 +62,11 @@ function Home() {
           {" "}
           <h1>Home</h1>
         </div>
-        {/* 
-    Things to fix: Looping through the image URLS, and Adding user's handle, Making all user's post visible, filter out the undefined objects */}
+
+        {/* Things to fix: Adding user's handle,  */}
 
         <div id="tweets">
           {tweets.map((tweet) => {
-            console.log("hi");
             return (
               <div className="tweet" key={uniqid()}>
                 <div className="tweet-handle">
@@ -58,7 +76,9 @@ function Home() {
 
                 <div className="tweet-body">
                   <p>{tweet?.tweetText.textValue}</p>
-                  <img src={tweet?.images[0].images}></img>
+                  <div>
+                    {tweet.images === "" ? null : mapImages(tweet.images)}
+                  </div>
                 </div>
 
                 <div className="tweet-stat">
