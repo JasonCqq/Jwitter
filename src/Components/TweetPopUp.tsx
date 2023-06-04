@@ -39,6 +39,8 @@ const TweetPopUp = () => {
     const hour = date.getHours();
     const minute = date.getMinutes();
 
+    const newHour = hour < 12 ? "AM" : "PM";
+
     const text = document.getElementById("tweetText") as HTMLTextAreaElement;
     const textValue = text.value;
 
@@ -46,8 +48,11 @@ const TweetPopUp = () => {
       tweetText: { textValue },
       likes: 0,
       comments: 0,
-      timestamp: `${hour} : ${minute}, ${month}/${day}/${year}`,
+      timestamp: `${hour} : ${minute} ${newHour}, ${month}/${day}/${year}`,
       images: "",
+      userID: `${user?.uid}`,
+      userProfileURL: `${user?.photoURL}`,
+      userName: `${user?.displayName}`,
     });
 
     try {
@@ -72,6 +77,8 @@ const TweetPopUp = () => {
     } catch (error: any) {
       console.error(error.code, error.message);
     }
+
+    openTweetWindow();
   };
 
   //Add small images to imgContainer

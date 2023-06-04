@@ -1,5 +1,6 @@
 .main-home {
-  height: 200vh;
+  box-sizing: border-box;
+  height: 100vh;
   width: 50vw;
   margin-left: 25vw;
   margin-right: 25vw;
@@ -12,21 +13,80 @@
     font-size: 1.25rem;
     background-color: #15202b;
     position: fixed;
-    width: 10%;
-    height: 4vh;
+    width: 49.89vw;
+    height: 5vh;
     border-bottom: 1px solid #38444d;
-    padding: 10px;
+
+    h1 {
+      padding: 10px;
+    }
   }
 
   #tweets {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-auto-rows: min-content;
-    padding-top: 7vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 8vh;
+    width: 100%;
+    height: 100%;
+    gap: 15px;
 
     .tweet {
       border-bottom: 1px solid #38444d;
-      padding: 20px;
+      width: calc(100%);
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 5%;
+
+      .tweet-handle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: 3vw;
+
+        img {
+          border-radius: 50px;
+          height: 50px;
+          width: 50px;
+        }
+      }
+
+      .tweet-body {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-left: 3vw;
+        padding-top: 20px;
+
+        p {
+          font-size: 1.25rem;
+          font-weight: 500;
+          margin-left: 1vw;
+        }
+
+        img {
+          height: 200px;
+          width: 200px;
+          border-radius: 25px;
+          margin-left: 1vw;
+        }
+      }
+
+      .tweet-stat {
+        display: flex;
+        gap: 10%;
+        align-items: center;
+        margin-left: 4vw;
+        margin-top: auto;
+        margin-bottom: 2%;
+        padding: 2%;
+
+        .tweet-time {
+          margin-left: auto;
+          margin-right: 5vh;
+          color: #5e898f;
+        }
+      }
     }
   }
 }
