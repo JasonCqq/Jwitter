@@ -18,27 +18,27 @@ function Home() {
         </div>
 
         <div id="tweets">
-          <div>
+          <div className="tweet">
             <h1>Test Tweet</h1>
             <p>This is a test tweet. I repeat, this is a test tweet.</p>
           </div>
 
-          <div>
+          <div className="tweet">
             <h1>Test Tweet</h1>
             <p>This is a test tweet. I repeat, this is a test tweet.</p>
           </div>
 
-          <div>
+          <div className="tweet">
             <h1>Test Tweet</h1>
             <p>This is a test tweet. I repeat, this is a test tweet.</p>
           </div>
 
-          <div>
+          <div className="tweet">
             <h1>Test Tweet</h1>
             <p>This is a test tweet. I repeat, this is a test tweet.</p>
           </div>
 
-          <div>
+          <div className="tweet">
             <h1>Test Tweet</h1>
             <p>This is a test tweet. I repeat, this is a test tweet.</p>
           </div>

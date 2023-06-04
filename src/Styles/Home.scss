@@ -21,12 +21,12 @@
   #tweets {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto;
+    grid-auto-rows: min-content;
     padding-top: 7vh;
 
-    div {
-      height: 10vh;
+    .tweet {
       border-bottom: 1px solid #38444d;
+      padding: 20px;
     }
   }
 }

@@ -7,6 +7,7 @@ import {
   AiOutlineNotification,
 } from "react-icons/ai";
 import { FaTwitter } from "react-icons/fa";
+import { BsBookmark } from "react-icons/bs";
 import { useGlobalContext } from "./AuthContext";
 import { signOut, getAuth } from "../Firebase.js";
 import { Link } from "react-router-dom";
@@ -26,7 +27,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     dropdown.current && autoAnimate(dropdown.current);
-  }, [dropdown]);
+  }, [reveal]);
 
   const show = () => setReveal(!reveal);
 
@@ -89,6 +90,13 @@ const Sidebar = () => {
             <AiOutlineMessage size={30} />
             <span>Messages</span>
           </Link>
+        </div>
+
+        <div className="sidebarItem">
+          <a href="#">
+            <BsBookmark size={30} />
+            <span>Bookmarks</span>
+          </a>
         </div>
 
         <div className="sidebarItem">

@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import "../Styles/sharedFunctions.scss";
 import { RxCross2 } from "react-icons/rx";
 import { LogInContext } from "./Routeswitch";
-import autoAnimate from "@formkit/auto-animate";
+import { CSSTransitionGroup } from "react-transition-group";
 
 //Authentications
 function useAuthentication() {
@@ -87,67 +87,75 @@ function CreateAccountWindow() {
   };
 
   return (
-    <div className="createAccountWindowPopUp">
-      <div className="createAccount-window">
-        <RxCross2
-          size={25}
-          className="exitButton"
-          onClick={() => closeWindows()}
-        />
-        <div className="innerWindow">
-          <h1>Create Your Account</h1>
-          <form onSubmit={formSubmit}>
-            <input
-              className="handle-input"
-              name="handle"
-              type="name"
-              placeholder="Handle"
-              required
-              value={handle}
-              onChange={(e) => setHandle(e.target.value)}
-            ></input>
+    <CSSTransitionGroup
+      transitionName="example"
+      transitionAppear={true}
+      transitionAppearTimeout={1000}
+      transitionEnter={true}
+      transitionLeave={true}
+    >
+      <div className="createAccountWindowPopUp">
+        <div className="createAccount-window">
+          <RxCross2
+            size={25}
+            className="exitButton"
+            onClick={() => closeWindows()}
+          />
+          <div className="innerWindow">
+            <h1>Create Your Account</h1>
+            <form onSubmit={formSubmit}>
+              <input
+                className="handle-input"
+                name="handle"
+                type="name"
+                placeholder="Handle"
+                required
+                value={handle}
+                onChange={(e) => setHandle(e.target.value)}
+              ></input>
 
-            <input
-              className="email-input"
-              name="email"
-              type="email"
-              placeholder="Email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            ></input>
+              <input
+                className="email-input"
+                name="email"
+                type="email"
+                placeholder="Email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></input>
 
-            <input
-              className="password-input"
-              name="password"
-              type="password"
-              placeholder="Password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              minLength={8}
-            ></input>
-            <input
-              className="passwordConfirmation-input"
-              name="passwordConfirmation"
-              type="password"
-              placeholder="Confirm Password"
-              required
-              value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-              minLength={8}
-            ></input>
+              <input
+                className="password-input"
+                name="password"
+                type="password"
+                placeholder="Password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                minLength={8}
+              ></input>
+              <input
+                className="passwordConfirmation-input"
+                name="passwordConfirmation"
+                type="password"
+                placeholder="Confirm Password"
+                required
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                minLength={8}
+              ></input>
 
-            <button type="submit">Create Account</button>
+              <button type="submit">Create Account</button>
 
-            <p>
-              Already have an account?{" "}
-              <strong onClick={() => closeAndOpenSignIn()}>Log in</strong>
-            </p>
-          </form>
+              <p>
+                Already have an account?{" "}
+                <strong onClick={() => closeAndOpenSignIn()}>Log in</strong>
+              </p>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </CSSTransitionGroup>
   );
 }
 
@@ -179,44 +187,52 @@ const SignInWindow = () => {
   };
 
   return (
-    <div className="createAccountWindowPopUp">
-      <div className="createAccount-window">
-        <RxCross2
-          size={25}
-          className="exitButton"
-          onClick={() => closeWindows()}
-        />
-        <div className="innerWindow">
-          <h1>Sign In</h1>
-          <form onSubmit={formSubmit}>
-            <input
-              className="email-input"
-              name="email"
-              type="email"
-              placeholder="Email..."
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            ></input>
-            <input
-              name="password"
-              type="password"
-              placeholder="Password..."
-              required
-              value={password}
-              minLength={8}
-              onChange={(e) => setPassword(e.target.value)}
-            ></input>
-            <button type="submit">Sign In</button>
+    <CSSTransitionGroup
+      transitionName="example"
+      transitionAppear={true}
+      transitionAppearTimeout={1000}
+      transitionEnter={true}
+      transitionLeave={true}
+    >
+      <div className="createAccountWindowPopUp">
+        <div className="createAccount-window">
+          <RxCross2
+            size={25}
+            className="exitButton"
+            onClick={() => closeWindows()}
+          />
+          <div className="innerWindow">
+            <h1>Sign In</h1>
+            <form onSubmit={formSubmit}>
+              <input
+                className="email-input"
+                name="email"
+                type="email"
+                placeholder="Email..."
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              ></input>
+              <input
+                name="password"
+                type="password"
+                placeholder="Password..."
+                required
+                value={password}
+                minLength={8}
+                onChange={(e) => setPassword(e.target.value)}
+              ></input>
+              <button type="submit">Sign In</button>
 
-            <p>
-              Don&apos;t have an account?{" "}
-              <strong onClick={() => closeAndOpenCreate()}>Create one</strong>
-            </p>
-          </form>
+              <p>
+                Don&apos;t have an account?{" "}
+                <strong onClick={() => closeAndOpenCreate()}>Create one</strong>
+              </p>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </CSSTransitionGroup>
   );
 };
 

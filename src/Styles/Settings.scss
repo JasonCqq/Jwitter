@@ -7,4 +7,39 @@
   border-left: 1px solid #38444d;
   border-right: 1px solid #38444d;
   color: white;
+
+  #settings-wrapper {
+    padding-top: 7vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5vh;
+
+    .settings-item {
+      height: 7vh;
+      padding-top: 3vh;
+      padding-left: 1.5vh;
+      border-bottom: 1px solid #38444d;
+
+      &:hover {
+        background-color: #1e2732;
+        cursor: pointer;
+      }
+
+      p {
+        font-weight: lighter;
+        font-size: 0.85rem;
+        padding-top: 5px;
+      }
+    }
+  }
+
+  h1 {
+    font-size: 1.25rem;
+    background-color: #15202b;
+    position: fixed;
+    width: 20%;
+    height: 4vh;
+    border-bottom: 1px solid #38444d;
+    padding: 15px 10px;
+  }
 }
