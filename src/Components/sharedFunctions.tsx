@@ -31,28 +31,6 @@ function useAuthentication() {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(getAuth(), provider);
   }
-
-  // createUserWithEmailAndPassword(auth, email, password)
-  //   .then((userCredential) => {
-  //     const user = userCredential.user;
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     console.log(errorCode, errorMessage);
-  //   });
-
-  // signInWithEmailAndPassword(auth, email, password)
-  //   .then((userCredential) => {
-  //     // Signed in
-  //     const user = userCredential.user;
-  //     // ...
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //   });
-
   return { googleSignIn };
 }
 

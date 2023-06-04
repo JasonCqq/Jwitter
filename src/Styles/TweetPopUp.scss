@@ -1,0 +1,100 @@
+#tweetPopUp {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba($color: #31404e, $alpha: 0.4);
+  top: 0;
+  left: 0;
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  color: white;
+}
+
+.tweet-container {
+  margin-top: 10vh;
+  background-color: #15202b;
+  height: 40%;
+  width: 40%;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+
+  .tweet-container-exit {
+    margin: 25px 0px 0px 25px;
+    border-radius: 50px;
+
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(37, 46, 56, 1);
+    }
+  }
+
+  .tweet-container-middle {
+    display: flex;
+    height: 100%;
+    width: calc(100% - 3vw);
+    padding-left: 3vw;
+
+    form {
+      width: 80%;
+      textarea {
+        resize: none;
+        font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+          "Helvetica Neue", sans-serif;
+        height: 80%;
+        width: 90%;
+        margin-top: 5vh;
+        margin-left: 2vw;
+        font-size: 1.25rem;
+        background: transparent;
+        border: none;
+        color: white;
+
+        &:focus {
+          border: none;
+          outline: none;
+        }
+      }
+    }
+
+    img {
+      border-radius: 50px;
+      width: 50px;
+      height: 50px;
+      margin-top: 3vh;
+    }
+  }
+
+  .tweet-container-bottom {
+    border-top: 1px solid #38444d;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .tweet-container-submit-image {
+      margin-left: 2vw;
+      cursor: pointer;
+    }
+
+    .tweet-container-button {
+      align-self: center;
+      color: white;
+      background-color: #7856ff;
+      padding: 1.5vh 2vw;
+      margin-right: 2vw;
+      border-radius: 50px;
+      font-size: 1rem;
+      border: none;
+      font-weight: 900;
+
+      &:hover {
+        cursor: pointer;
+        font-weight: 600;
+        background-color: #653ffc;
+      }
+    }
+  }
+}

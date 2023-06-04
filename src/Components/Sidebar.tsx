@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, createContext } from "react";
 import "../Styles/Sidebar.scss";
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
 import {
@@ -12,9 +12,21 @@ import { useGlobalContext } from "./AuthContext";
 import { signOut, getAuth } from "../Firebase.js";
 import { Link } from "react-router-dom";
 import autoAnimate from "@formkit/auto-animate";
+import TweetPopUp from "./TweetPopUp";
+
+//////////////////////////////////////////////////
+export const TweetWindowContext = createContext({
+  tweetWindow: true,
+  openTweetWindow: () => {},
+});
 
 const Sidebar = () => {
   const { user, setUser } = useGlobalContext();
+  const [tweetWindow, setTweetWindow] = useState(false);
+
+  const openTweetWindow = () => {
+    setTweetWindow((prevTweetWindow) => !prevTweetWindow);
+  };
 
   const signOutUser = async () => {
     signOut(getAuth()).then(() => {
@@ -41,15 +53,13 @@ const Sidebar = () => {
               src={user?.photoURL ?? ""}
               alt="User Avatar"
             ></img>
-            <div>
-              <p>
-                {user?.displayName} <br></br> @temp-handle1
-              </p>
-            </div>
+            <p>
+              {user?.displayName} <br></br> @temp-handle1
+            </p>
           </div>
 
           {reveal && (
-            <div>
+            <div className="profile-buttons">
               <button onClick={() => signOutUser()} className="signOutButton">
                 Sign Out
               </button>
@@ -117,14 +127,21 @@ const Sidebar = () => {
           </a>
         </div>
 
-        <button id="tweetButton">Tweet</button>
+        <button id="tweetButton" onClick={() => openTweetWindow()}>
+          Tweet
+        </button>
 
         {user ? profile() : null}
       </nav>
     );
   };
 
-  return <>{sideBarContent()}</>;
+  return (
+    <TweetWindowContext.Provider value={{ tweetWindow, openTweetWindow }}>
+      {sideBarContent()}
+      {tweetWindow ? <TweetPopUp /> : null}
+    </TweetWindowContext.Provider>
+  );
 };
 
 export default Sidebar;

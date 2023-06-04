@@ -75,9 +75,15 @@ nav {
     justify-content: center;
     align-items: center;
     background-color: #1e2732;
+    text-align: center;
 
     #profile-nav {
       padding: 10px 0px;
+      display: flex;
+
+      img {
+        margin-left: 1vw;
+      }
 
       .user-handle {
         font-weight: lighter;
@@ -88,6 +94,11 @@ nav {
       .profile-avatar {
         border-radius: 50px;
         height: 50px;
+      }
+
+      .profile-buttons {
+        display: flex;
+        justify-content: center;
       }
 
       p {

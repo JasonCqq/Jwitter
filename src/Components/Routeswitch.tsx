@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState, createContext } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import Sidebar from "./Sidebar";
