@@ -83,6 +83,8 @@
         gap: 3vh;
         height: 100%;
         width: 100%;
+        overflow: scroll;
+        overflow-x: hidden;
 
         p {
           font-size: 0.75rem;
@@ -100,6 +102,7 @@
           span {
             display: flex;
             justify-content: space-between;
+            padding-right: 10px;
           }
 
           h1 {
