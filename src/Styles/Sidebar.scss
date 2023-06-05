@@ -14,6 +14,13 @@ nav {
   align-items: flex-end;
   gap: 3vw;
 
+  .blocked:hover {
+    cursor: not-allowed;
+    a:hover {
+      cursor: not-allowed;
+    }
+  }
+
   div {
     display: flex;
     align-items: center;

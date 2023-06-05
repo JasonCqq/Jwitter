@@ -6,11 +6,13 @@ import { useGlobalContext } from "./AuthContext";
 import uniqid from "uniqid";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
+import { BsBookmark } from "react-icons/bs";
 
 function Home() {
   const { user } = useGlobalContext();
   const [tweets, setTweets] = useState<any[]>([]);
 
+  //Displays tweets in database
   const displayData = async () => {
     const db = getFirestore(app);
 
@@ -88,7 +90,8 @@ function Home() {
                   <p>
                     <FaRegComment size={20} /> {tweet?.comments}
                   </p>
-                  <p className="tweet-time">Posted on {tweet?.timestamp}</p>
+                  <BsBookmark size={20} />
+                  <p className="tweet-time">Posted {tweet?.timestamp}</p>
                 </div>
               </div>
             );

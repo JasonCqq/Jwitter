@@ -148,8 +148,11 @@
     div {
       display: flex;
       width: 20vw;
-
       gap: 5px;
+
+      &:hover {
+        cursor: not-allowed;
+      }
     }
   }
 }

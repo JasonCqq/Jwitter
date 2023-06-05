@@ -21,6 +21,7 @@ const RightSidebar = () => {
   const { user } = useGlobalContext();
   const [hotTopics, setHotTopics] = useState<any>([]);
 
+  //Fetches 4 Articles from newsapi and display
   useEffect(() => {
     const url =
       "https://newsapi.org/v2/top-headlines?" +

@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useRef, createContext } from "react";
 import "../Styles/Sidebar.scss";
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
-import {
-  AiOutlineMessage,
-  AiOutlineGithub,
-  AiOutlineNotification,
-} from "react-icons/ai";
+import { AiOutlineMessage, AiOutlineGithub } from "react-icons/ai";
 import { FaTwitter } from "react-icons/fa";
 import { BsBookmark } from "react-icons/bs";
 import { useGlobalContext } from "./AuthContext";
@@ -13,7 +9,8 @@ import { signOut, getAuth } from "../Firebase.js";
 import { Link } from "react-router-dom";
 import autoAnimate from "@formkit/auto-animate";
 import TweetPopUp from "./TweetPopUp";
-
+import { FaRegBell } from "react-icons/fa";
+import { getFirestore, app, doc, getDoc } from "../Firebase.js";
 //////////////////////////////////////////////////
 export const TweetWindowContext = createContext({
   tweetWindow: true,
@@ -22,8 +19,29 @@ export const TweetWindowContext = createContext({
 
 const Sidebar = () => {
   const { user, setUser } = useGlobalContext();
+  const [username, setUsername] = useState("");
+
+  const getUserData = async () => {
+    const db = getFirestore(app);
+    const userRef = doc(db, "users", `${user?.uid}`);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      setUsername(userSnap.data().settings.username);
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      getUserData();
+    }
+  }, [user]);
+
   const [tweetWindow, setTweetWindow] = useState(false);
 
+  //Tweet
   const openTweetWindow = () => {
     setTweetWindow((prevTweetWindow) => !prevTweetWindow);
   };
@@ -34,6 +52,7 @@ const Sidebar = () => {
     });
   };
 
+  //Profile Dropdown
   const [reveal, setReveal] = useState(false);
   const dropdown = useRef(null);
 
@@ -50,12 +69,13 @@ const Sidebar = () => {
           <div id="profile-nav">
             <img
               className="profile-avatar"
-              src={user?.photoURL ?? ""}
+              src={
+                user?.photoURL ??
+                "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
+              }
               alt="User Avatar"
             ></img>
-            <p>
-              {user?.displayName} <br></br> @temp-handle1
-            </p>
+            <p>{username}</p>
           </div>
 
           {reveal && (
@@ -88,18 +108,18 @@ const Sidebar = () => {
           </Link>
         </div>
 
-        <div className="sidebarItem">
-          <Link to="/notices">
-            <AiOutlineNotification size={30} />
-            <span>Notices</span>
-          </Link>
+        <div className="sidebarItem blocked">
+          <a href="#">
+            <FaRegBell size={30} />
+            <span>Notifications</span>
+          </a>
         </div>
 
-        <div className="sidebarItem">
-          <Link to="/messages">
+        <div className="sidebarItem blocked">
+          <a href="#">
             <AiOutlineMessage size={30} />
             <span>Messages</span>
-          </Link>
+          </a>
         </div>
 
         <div className="sidebarItem">
