@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
 import { useGlobalContext } from "./AuthContext";
 import "../Styles/TweetPopUp.scss";
 import { RxCross2 } from "react-icons/rx";
@@ -14,10 +14,25 @@ import {
   uploadBytesResumable,
   getDownloadURL,
   updateDoc,
+  doc,
+  getDoc,
 } from "../Firebase.js";
 import { CSSTransitionGroup } from "react-transition-group";
 
+type UserData = {
+  settings: {
+    created: string;
+    email: string;
+    name: string;
+    phone: string;
+    photoURL: string;
+    username: string;
+  };
+};
+
 const TweetPopUp = () => {
+  const [userData, setUserData] = useState<UserData | null>(null);
+
   // User profile picture
   // Image option
   // Textfield with character limit
@@ -28,10 +43,27 @@ const TweetPopUp = () => {
   const { user } = useGlobalContext();
   const imageCount = useRef(0);
 
+  const getUserData = async () => {
+    const db = getFirestore(app);
+    const userRef = doc(db, "users", `${user?.uid}`);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      setUserData(userSnap.data() as UserData);
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, [user]);
+
   const db = getFirestore(app);
 
   //Submit Tweet Information to user.
   const submitTweetFunction = async () => {
+    //Timestamp
     const date = new Date();
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -43,6 +75,7 @@ const TweetPopUp = () => {
 
     const userRef = collection(db, "users", `${user?.uid}`, "tweets");
 
+    //Tweet Text
     const text = document.getElementById("tweetText") as HTMLTextAreaElement;
     const textValue = text.value;
 
@@ -53,8 +86,11 @@ const TweetPopUp = () => {
       timestamp: `${hour} : ${minute} ${newHour}, ${month}/${day}/${year}`,
       images: "",
       userID: `${user?.uid}`,
-      userProfileURL: `${user?.photoURL}`,
-      userName: `${user?.displayName}`,
+      userProfileURL: `${
+        user?.photoURL ||
+        "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
+      }`,
+      userName: `${userData?.settings.username}`,
     });
 
     //Stores each image into firebase storage
@@ -139,7 +175,12 @@ const TweetPopUp = () => {
           />
 
           <div className="tweet-container-middle">
-            <img src={user?.photoURL ?? ""}></img>
+            <img
+              src={
+                user?.photoURL ??
+                "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
+              }
+            ></img>
             <form>
               <textarea
                 placeholder="Write your tweet..."

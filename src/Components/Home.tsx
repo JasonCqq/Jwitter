@@ -73,7 +73,7 @@ function Home() {
               <div className="tweet" key={uniqid()}>
                 <div className="tweet-handle">
                   <img src={tweet?.userProfileURL}></img>
-                  <p>@{tweet?.userName}</p>
+                  <p>{tweet?.userName}</p>
                 </div>
 
                 <div className="tweet-body">
