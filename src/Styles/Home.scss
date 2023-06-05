@@ -10,11 +10,11 @@
   color: white;
 
   .info-bar {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     background-color: #15202b;
     position: fixed;
     width: 49.85vw;
-    height: 5vh;
+    height: 8vh;
     border-bottom: 1px solid #38444d;
 
     h1 {
@@ -25,7 +25,7 @@
   #tweets {
     display: flex;
     flex-direction: column;
-    padding-top: 8vh;
+    padding-top: 10vh;
     width: 100%;
     height: 100%;
     gap: 15px;
@@ -43,6 +43,7 @@
         align-items: center;
         gap: 10px;
         margin-left: 3vw;
+        font-weight: bold;
 
         img {
           border-radius: 50px;
@@ -59,9 +60,9 @@
         padding-top: 20px;
 
         p {
-          font-size: 1.25rem;
-          font-weight: 500;
-          margin-left: 1vw;
+          font-size: 1.1rem;
+          font-weight: 400;
+          margin-left: 5px;
         }
 
         img {
@@ -76,15 +77,44 @@
         display: flex;
         gap: 10%;
         align-items: center;
-        margin-left: 4vw;
+        margin-left: 1vw;
         margin-top: auto;
         margin-bottom: 2%;
         padding: 2%;
         justify-content: space-between;
+        color: #8b98a5;
+
+        div {
+          width: 5vw;
+        }
+
+        .tweet-stat-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 7px;
+        }
+
+        .tweet-comment:hover {
+          background-color: rgba(37, 46, 56, 1);
+          border-radius: 50px;
+          cursor: pointer;
+        }
+
+        .tweet-heart:hover {
+          background-color: rgba(37, 46, 56, 1);
+          border-radius: 50px;
+          cursor: pointer;
+        }
+
+        p {
+          font-size: 0.9rem;
+        }
 
         .tweet-time {
           margin-right: 5vh;
-          color: #5e898f;
+          color: #8b98a5;
+          font-size: 0.8rem;
         }
       }
     }

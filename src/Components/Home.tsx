@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Home.scss";
 import { CSSTransitionGroup } from "react-transition-group";
-import { collection, doc, getDocs, app, getFirestore } from "../Firebase.js";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  app,
+  getFirestore,
+  addDoc,
+} from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
 import uniqid from "uniqid";
 import { AiOutlineHeart } from "react-icons/ai";
@@ -43,7 +51,7 @@ function Home() {
 
     setTweets(newQueries);
   };
-
+  //Displays images from tweet
   const mapImages = (image: any[]) => {
     console.log;
     return (
@@ -58,6 +66,28 @@ function Home() {
   useEffect(() => {
     displayData();
   }, [user]);
+
+  const likeFunction = async (targetUser: string, id: string) => {
+    const db = getFirestore(app);
+
+    const tweetRef = doc(db, "users", `${targetUser}`, "tweets", `${id}`);
+    const tweetSnap = await getDoc(tweetRef);
+
+    const userSnap = await getDocs(
+      collection(db, "users", `${user?.uid}`, "likedTweets")
+    );
+
+    console.log(userSnap);
+    for (const snap of userSnap.docs) {
+      if (snap.id === user?.uid) {
+        continue;
+      }
+
+      if (snap.id !== user?.uid) {
+        console.log(tweetSnap);
+      }
+    }
+  };
 
   return (
     <CSSTransitionGroup
@@ -92,13 +122,31 @@ function Home() {
                 </div>
 
                 <div className="tweet-stat">
-                  <p>
-                    <AiOutlineHeart size={20} /> {tweet?.likes}
-                  </p>
-                  <p>
-                    <FaRegComment size={20} /> {tweet?.comments}
-                  </p>
-                  <BsBookmark size={20} />
+                  <div className="tweet-stat-container">
+                    <AiOutlineHeart
+                      className="tweet-heart"
+                      size={20}
+                      color="#7856ff"
+                      onClick={() => likeFunction(tweet.userID, tweet.docID)}
+                    />{" "}
+                    <p>{tweet?.likes}</p>
+                  </div>
+                  <div className="tweet-stat-container">
+                    <FaRegComment
+                      className="tweet-comment"
+                      size={17.5}
+                      color="#7856ff"
+                    />{" "}
+                    <p>{tweet?.comments}</p>
+                  </div>
+
+                  <div className="tweet-stat-container">
+                    <BsBookmark
+                      className="tweet-comment"
+                      size={17.5}
+                      color="#7856ff"
+                    />{" "}
+                  </div>
                   <p className="tweet-time">Posted {tweet?.timestamp}</p>
                 </div>
               </div>

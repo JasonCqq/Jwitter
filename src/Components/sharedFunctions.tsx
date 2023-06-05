@@ -97,40 +97,6 @@ function CreateAccountWindow() {
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
-  // const submitUserInfo = async () => {
-  //   const db = getFirestore(app);
-  //   const userRef = collection(db, "users");
-  //   const docRef = doc(userRef, `${user?.uid}`);
-  //   const docSnapshot = await getDoc(docRef);
-  //   if (docSnapshot.exists()) {
-  //     return;
-  //   }
-  //   //Date creation of Account
-  //   const createdAt = getAuth().currentUser?.metadata.creationTime;
-  //   const generatedUsername = "@" + handle;
-  //   const photoURLCheck = user?.photoURL
-  //     ? user?.photoURL
-  //     : //default pic
-  //       "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6";
-
-  //   await setDoc(doc(db, "users", `${user?.uid}`), {
-  //     settings: {
-  //       email: email,
-  //       name: user?.displayName || "",
-  //       created: createdAt,
-  //       phone: "",
-  //       username: generatedUsername,
-  //       photoURL: photoURLCheck,
-  //     },
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   if (user) {
-  //     submitUserInfo();
-  //   }
-  // }, [user]);
-
   //Submit user information into firebase
   const formSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

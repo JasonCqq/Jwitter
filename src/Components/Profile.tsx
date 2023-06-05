@@ -124,10 +124,10 @@ const Profile = () => {
 
                 <div className="tweet-stat">
                   <p>
-                    <AiOutlineHeart size={20} /> {tweet?.likes}
+                    <AiOutlineHeart size={20} color="#7856ff" /> {tweet?.likes}
                   </p>
                   <p>
-                    <FaRegComment size={20} /> {tweet?.comments}
+                    <FaRegComment size={20} color="#7856ff" /> {tweet?.comments}
                   </p>
                   <p className="tweet-time">Posted {tweet?.timestamp}</p>
                 </div>
@@ -137,7 +137,7 @@ const Profile = () => {
 
           {noTweets ? (
             <div className="tweet" key={uniqid()}>
-              <h2 className="empty-tweets">No Tweets...</h2>
+              <h2 className="empty-tweets">No More Tweets...</h2>
             </div>
           ) : null}
         </div>

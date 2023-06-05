@@ -65,11 +65,11 @@ const RightSidebar = () => {
     return (
       <div className="trending-tab">
         <div className="search-bar">
-          <input placeholder="Search Jwitter Tweets..."></input>
+          <input placeholder="Search Jwitter"></input>
         </div>
 
         <div className="recentevents-tab">
-          <h1>Current Events</h1>
+          <h1>Current News</h1>
 
           <div className="events-container">
             {hotTopics.map((topic: Article) => {

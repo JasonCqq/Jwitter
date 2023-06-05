@@ -3,7 +3,6 @@ import "../Styles/Sidebar.scss";
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
 import { AiOutlineMessage, AiOutlineGithub } from "react-icons/ai";
 import { FaTwitter } from "react-icons/fa";
-import { BsBookmark } from "react-icons/bs";
 import { useGlobalContext } from "./AuthContext";
 import { signOut, getAuth } from "../Firebase.js";
 import { Link } from "react-router-dom";
@@ -11,6 +10,9 @@ import autoAnimate from "@formkit/auto-animate";
 import TweetPopUp from "./TweetPopUp";
 import { FaRegBell } from "react-icons/fa";
 import { getFirestore, app, doc, getDoc } from "../Firebase.js";
+import { CgProfile } from "react-icons/cg";
+import { MdLogout } from "react-icons/md";
+import { BsBookmark } from "react-icons/bs";
 //////////////////////////////////////////////////
 export const TweetWindowContext = createContext({
   tweetWindow: true,
@@ -80,12 +82,10 @@ const Sidebar = () => {
 
           {reveal && (
             <div className="profile-buttons">
+              <MdLogout size={30} />
               <button onClick={() => signOutUser()} className="signOutButton">
                 Sign Out
               </button>
-              <Link to="/profile" className="signOutButton">
-                Profile
-              </Link>
             </div>
           )}
         </div>
@@ -108,6 +108,27 @@ const Sidebar = () => {
           </Link>
         </div>
 
+        <div className="sidebarItem">
+          <Link to="/profile">
+            <CgProfile size={30} />
+            <span>Profile</span>
+          </Link>
+        </div>
+
+        <div className="sidebarItem">
+          <Link to="/">
+            <BsBookmark size={30} />
+            <span>Bookmarks</span>
+          </Link>
+        </div>
+
+        <div className="sidebarItem">
+          <Link to="/settings">
+            <IoSettingsOutline size={30} />
+            <span>Settings</span>
+          </Link>
+        </div>
+
         <div className="sidebarItem blocked">
           <a href="#">
             <FaRegBell size={30} />
@@ -120,20 +141,6 @@ const Sidebar = () => {
             <AiOutlineMessage size={30} />
             <span>Messages</span>
           </a>
-        </div>
-
-        <div className="sidebarItem">
-          <Link to="/bookmarks">
-            <BsBookmark size={30} />
-            <span>Bookmarks</span>
-          </Link>
-        </div>
-
-        <div className="sidebarItem">
-          <Link to="/settings">
-            <IoSettingsOutline size={30} />
-            <span>Settings</span>
-          </Link>
         </div>
 
         <div className="sidebarItem">

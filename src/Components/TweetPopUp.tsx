@@ -3,6 +3,11 @@ import { useGlobalContext } from "./AuthContext";
 import "../Styles/TweetPopUp.scss";
 import { RxCross2 } from "react-icons/rx";
 import { FiImage } from "react-icons/fi";
+import { AiOutlineFileGif } from "react-icons/ai";
+import { BsEmojiSmile } from "react-icons/bs";
+import { HiOutlineLocationMarker } from "react-icons/hi";
+import { SlCalender } from "react-icons/sl";
+
 import { TweetWindowContext } from "./Sidebar";
 import {
   collection,
@@ -93,6 +98,9 @@ const TweetPopUp = () => {
       }`,
       userName: `${userData?.settings.username}`,
     });
+    //Add DocID Attribute
+    const docID = docRef.id;
+    await updateDoc(docRef, { docID });
 
     //Stores each image into firebase storage
     try {
@@ -210,6 +218,12 @@ const TweetPopUp = () => {
               onChange={previewImage}
               multiple
             ></input>
+
+            <AiOutlineFileGif size={30} color="#7856ff72" />
+            <BsEmojiSmile size={30} color="#7856ff72" />
+            <HiOutlineLocationMarker size={30} color="#7856ff72" />
+            <SlCalender size={30} color="#7856ff72" />
+
             <button
               onClick={() => submitTweetFunction()}
               type="submit"

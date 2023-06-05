@@ -246,8 +246,19 @@ table {
         padding: 4px 5px;
       }
 
+      .profile-wrapper {
+        margin-top: 3vh;
+        display: flex;
+        width: 15vw;
+        p {
+          display: none;
+        }
+      }
+
       #tweetButton {
-        padding: 4px 5px;
+        padding: 4px 10px;
+        margin-right: auto;
+        margin-left: 5vw;
       }
 
       .signOutButton {

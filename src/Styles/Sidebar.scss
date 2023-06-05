@@ -12,7 +12,7 @@ nav {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 3vw;
+  gap: 4vh;
 
   .blocked:hover {
     cursor: not-allowed;
@@ -45,11 +45,15 @@ nav {
 
   .sidebarItem {
     color: #7856ff;
+
     &:hover {
       color: #7856ff;
       a {
         color: #7856ff;
       }
+    }
+    a {
+      font-weight: bold;
     }
   }
 
@@ -84,6 +88,14 @@ nav {
     background-color: #1e2732;
     text-align: center;
 
+    .profile-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0px;
+      padding-bottom: 10px;
+    }
+
     #profile-nav {
       padding: 10px 0px;
       display: flex;
@@ -103,15 +115,10 @@ nav {
         height: 50px;
       }
 
-      .profile-buttons {
-        display: flex;
-        justify-content: center;
-      }
-
       p {
         font-size: 15px;
         font-weight: 600;
-        width: 15vw;
+        width: 12.5vw;
       }
     }
 
@@ -119,15 +126,13 @@ nav {
       border: none;
       font-size: 1rem;
       border-radius: 50px;
-      padding: 5px 20px;
-      margin-bottom: 3vh;
       background: none;
       color: white;
+      font-weight: bold;
 
       &:hover {
         cursor: pointer;
-        font-weight: 600;
-        text-decoration: underline;
+        color: #7856ff;
       }
     }
   }

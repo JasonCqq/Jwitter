@@ -1,0 +1,18 @@
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #15202b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+  color: "#7856ff";
+  .loading-spinner {
+    margin: auto;
+    width: 100vw;
+    height: 100vh;
+  }
+}
