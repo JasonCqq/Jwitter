@@ -65,7 +65,7 @@ const RightSidebar = () => {
     return (
       <div className="trending-tab">
         <div className="search-bar">
-          <input placeholder="Search Jwitter..."></input>
+          <input placeholder="Search Jwitter Tweets..."></input>
         </div>
 
         <div className="recentevents-tab">

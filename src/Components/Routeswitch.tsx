@@ -7,6 +7,7 @@ import SignupFooter from "./SignupFooter";
 import { CreateAccountWindow, SignInWindow } from "./sharedFunctions";
 import Profile from "./Profile";
 import Settings from "./Settings";
+import Bookmarks from "./Bookmarks";
 
 export const LogInContext = createContext({
   createWindowOpen: false,
@@ -52,6 +53,7 @@ const RouteSwitch = () => {
             <Route path="/" element={<Home />}></Route>
             <Route path="/settings" element={<Settings />}></Route>
             <Route path="/profile" element={<Profile />}></Route>
+            <Route path="/bookmarks" element={<Bookmarks />}></Route>
           </Routes>
           <RightSidebar />
           <SignupFooter />

@@ -71,7 +71,8 @@ const TweetPopUp = () => {
     const hour = date.getHours();
     const minute =
       date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-    const newHour = hour < 12 ? "AM" : "PM";
+    const AMPM = hour < 12 ? "AM" : "PM";
+    const newHour = hour < 12 ? hour : hour - 12;
 
     const userRef = collection(db, "users", `${user?.uid}`, "tweets");
 
@@ -83,7 +84,7 @@ const TweetPopUp = () => {
       tweetText: { textValue },
       likes: 0,
       comments: 0,
-      timestamp: `${hour} : ${minute} ${newHour}, ${month}/${day}/${year}`,
+      timestamp: `${newHour}:${minute} ${AMPM}, ${month}/${day}/${year}`,
       images: "",
       userID: `${user?.uid}`,
       userProfileURL: `${

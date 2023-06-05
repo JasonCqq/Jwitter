@@ -123,10 +123,10 @@ const Sidebar = () => {
         </div>
 
         <div className="sidebarItem">
-          <a href="#">
+          <Link to="/bookmarks">
             <BsBookmark size={30} />
             <span>Bookmarks</span>
-          </a>
+          </Link>
         </div>
 
         <div className="sidebarItem">

@@ -130,8 +130,10 @@
         border-radius: 50px;
         padding: 15px 18px;
         color: white;
+        cursor: not-allowed;
 
         &:focus {
+          cursor: not-allowed;
           outline: none;
         }
       }
