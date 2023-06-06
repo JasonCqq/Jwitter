@@ -45,6 +45,8 @@ const TweetPopUp = () => {
   const { tweetWindow, openTweetWindow } = useContext(TweetWindowContext);
   const [images, setImages] = useState<File[]>([]);
 
+  const [loading, setLoading] = useState(false);
+
   const { user } = useGlobalContext();
   const imageCount = useRef(0);
 
@@ -68,6 +70,7 @@ const TweetPopUp = () => {
 
   //Submit Tweet Information to user.
   const submitTweetFunction = async () => {
+    setLoading(true);
     //Timestamp
     const date = new Date();
     const year = date.getFullYear();
@@ -83,31 +86,10 @@ const TweetPopUp = () => {
     const text = document.getElementById("tweetText") as HTMLTextAreaElement;
     const textValue = text.value;
 
-    const userRef = collection(db, "users", `${user?.uid}`, "tweets");
-    const docRef = await addDoc(userRef, {
-      tweetText: { textValue },
-      likes: 0,
-      comments: 0,
-      timestamp: `${newHour}:${minute} ${AMPM}, ${month}/${day}/${year}`,
-      images: "",
-      userID: `${user?.uid}`,
-      userProfileURL: `${
-        userData?.settings.photoURL ||
-        "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
-      }`,
-      userName: `${userData?.settings.username}`,
-    });
-    //Add DocID Attribute
-    const docID = docRef.id;
-    await updateDoc(docRef, { docID });
-
-    const mainRef = collection(db, "allTweets");
-    await setDoc(doc(mainRef, docID), {});
-
     //Stores each image into firebase storage
     try {
       const updatedImages = images.map(async (image) => {
-        const filePath = `${user?.uid}/${docRef.id}/${image.name}`;
+        const filePath = `${user?.uid}/${image.name}`;
         const newImageRef = ref(getStorage(), filePath);
         const fileSnapshot = await uploadBytesResumable(newImageRef, image);
         const publicImageUrl = await getDownloadURL(newImageRef);
@@ -118,19 +100,37 @@ const TweetPopUp = () => {
         };
       });
 
-      const updatedImagesUrls = await Promise.all(updatedImages);
-
-      await updateDoc(docRef, {
+      //Adds and submits all teh data
+      const userRef = collection(db, "users", `${user?.uid}`, "tweets");
+      const updatedImagesUrls: any = await Promise.all(updatedImages);
+      const docRef = await addDoc(userRef, {
+        tweetText: { textValue },
+        likes: 0,
+        comments: 0,
+        timestamp: `${newHour}:${minute} ${AMPM}, ${month}/${day}/${year}`,
         images: updatedImagesUrls,
+        userID: `${user?.uid}`,
+        userProfileURL: `${
+          userData?.settings.photoURL ||
+          "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
+        }`,
+        userName: `${userData?.settings.username}`,
       });
+      const docID = docRef.id;
+      await updateDoc(docRef, { docID });
+
+      //Add to main tweet collection
+      const mainRef = collection(db, "allTweets");
+      await setDoc(doc(mainRef, docID), {});
+
+      setLoading(false);
     } catch (error: any) {
       console.error(error.code, error.message);
     }
-
     openTweetWindow();
   };
 
-  //Add small images to imgContainer
+  //Add images to imgContainer
   const previewImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement;
 
@@ -225,13 +225,17 @@ const TweetPopUp = () => {
             <HiOutlineLocationMarker size={30} color="#7856ff72" />
             <SlCalender size={30} color="#7856ff72" />
 
-            <button
-              onClick={() => submitTweetFunction()}
-              type="submit"
-              className="tweet-container-button"
-            >
-              Tweet
-            </button>
+            {loading ? (
+              <p className="tweet-container-button">Submitting...</p>
+            ) : (
+              <button
+                onClick={() => submitTweetFunction()}
+                type="submit"
+                className="tweet-container-button"
+              >
+                Tweet
+              </button>
+            )}
           </div>
         </div>
       </div>

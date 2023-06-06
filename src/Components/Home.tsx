@@ -24,7 +24,7 @@ import { Link } from "react-router-dom";
 interface Tweet {
   comments: number;
   docID: string;
-  images: [];
+  images: Image[];
   likes: number;
   timestamp: string;
   tweetText: {
@@ -35,36 +35,30 @@ interface Tweet {
   userProfileURL: string;
 }
 
+interface Image {
+  images: string;
+  storageUri: string;
+}
+
 function Home() {
-  const { user } = useGlobalContext();
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [reveal, setReveal] = useState(false);
   const [newTweets, setNewTweets] = useState(0);
 
-  useEffect(() => {
-    displayData();
-  }, []);
-
+  //Adds a snapshot listener on tweets collection.
   useEffect(() => {
     const fetchTweets = async () => {
       const db = getFirestore(app);
-      const usersRef = collection(db, "users");
-      const userSnap = await getDocs(usersRef);
-
       const unsubscribe = onSnapshot(
         collection(db, "allTweets"),
         (snapshot) => {
-          console.log("SNAPSHOT", snapshot);
           snapshot.docChanges().forEach((change) => {
-            console.log("CHANGE:", change);
             if (change.type === "added") {
               setNewTweets((prevNewTweets) => prevNewTweets + 1);
-              console.log(newTweets);
             }
           });
         }
       );
-
       return () => {
         unsubscribe();
       };
@@ -72,10 +66,13 @@ function Home() {
     fetchTweets();
   }, []);
 
+  useEffect(() => {
+    displayData();
+  }, [newTweets]);
+
   const revealFunction = () => {
     setReveal(!reveal);
   };
-
   const revealContainer = () => {
     return (
       <div id="revealContainer">
@@ -87,50 +84,52 @@ function Home() {
 
   //Displays tweets in database
   const displayData = async () => {
-    console.log("DISPLAYING");
-    const db = getFirestore(app);
+    try {
+      setTweets([]);
+      const db = getFirestore(app);
+      const collectionSnapshot = await getDocs(collection(db, "users"));
+      const queries: any = [];
 
-    const collectionSnapshot = await getDocs(collection(db, "users"));
-    const queries: any = [];
+      for (const userDoc of collectionSnapshot.docs) {
+        const userId = userDoc.id;
 
-    for (const userDoc of collectionSnapshot.docs) {
-      const userId = userDoc.id;
+        const querySnapshot = await getDocs(
+          collection(db, "users", userId, "tweets")
+        );
 
-      const querySnapshot = await getDocs(
-        collection(db, "users", userId, "tweets")
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            queries.push(doc.data());
+          });
+        }
+      }
+      const newQueries = queries.sort(
+        (a: { timestamp: string }, b: { timestamp: string }) => {
+          const timestampA = new Date(a.timestamp).getTime();
+          const timestampB = new Date(b.timestamp).getTime();
+          return timestampB - timestampA;
+        }
       );
 
-      if (!querySnapshot.empty) {
-        querySnapshot.forEach((doc) => {
-          queries.push(doc.data());
-        });
-      }
+      setTweets(newQueries);
+    } catch (error) {
+      console.error(error);
     }
-
-    const newQueries = queries.sort(
-      (a: { timestamp: string }, b: { timestamp: string }) => {
-        const timestampA = new Date(a.timestamp).getTime();
-        const timestampB = new Date(b.timestamp).getTime();
-        return timestampB - timestampA;
-      }
-    );
-
-    setTweets(newQueries);
   };
   //Displays images from tweet
-  const mapImages = (image: any[]) => {
+  const mapImages = (image: Image[] = []) => {
+    console.log(image);
+    if (image.length === 0) {
+      return;
+    }
     return (
       <>
-        {image.map((img, index) => (
-          <img key={index} src={img.images} />
+        {image.map((img) => (
+          <img key={img.storageUri} src={img.images} />
         ))}
       </>
     );
   };
-
-  useEffect(() => {
-    displayData();
-  }, [newTweets]);
 
   return (
     <CSSTransitionGroup
@@ -171,7 +170,11 @@ function Home() {
                 <div className="tweet-body">
                   <p>{tweet?.tweetText.textValue}</p>
                   <div>
-                    {tweet.images.length === 0 ? null : mapImages(tweet.images)}
+                    {tweet.images.length === undefined ? (
+                      <div>Loading...</div>
+                    ) : (
+                      mapImages(tweet.images)
+                    )}
                   </div>
                 </div>
 
