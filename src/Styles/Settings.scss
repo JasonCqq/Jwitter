@@ -9,10 +9,8 @@
   color: white;
 
   #settings-wrapper {
-    padding-top: 7vh;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 5vh;
 
     .settings-item {
       height: 7vh;
@@ -34,12 +32,8 @@
   }
 
   h1 {
+    padding: 15px;
     font-size: 1.25rem;
-    background-color: #15202b;
-    position: fixed;
-    height: 5vh;
     border-bottom: 1px solid #38444d;
-    margin-top: 10px;
-    padding-left: 5px;
   }
 }

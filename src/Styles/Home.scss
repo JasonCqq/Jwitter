@@ -9,6 +9,13 @@
   border-right: 1px solid #38444d;
   color: white;
 
+  .info-bar {
+    h1 {
+      padding: 15px;
+      font-size: 1.25rem;
+    }
+  }
+
   #tweets {
     display: flex;
     flex-direction: column;

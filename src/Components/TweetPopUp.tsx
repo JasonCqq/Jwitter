@@ -21,6 +21,7 @@ import {
   updateDoc,
   doc,
   getDoc,
+  setDoc,
 } from "../Firebase.js";
 import { CSSTransitionGroup } from "react-transition-group";
 
@@ -83,7 +84,6 @@ const TweetPopUp = () => {
     const textValue = text.value;
 
     const userRef = collection(db, "users", `${user?.uid}`, "tweets");
-
     const docRef = await addDoc(userRef, {
       tweetText: { textValue },
       likes: 0,
@@ -100,6 +100,9 @@ const TweetPopUp = () => {
     //Add DocID Attribute
     const docID = docRef.id;
     await updateDoc(docRef, { docID });
+
+    const mainRef = collection(db, "allTweets");
+    await setDoc(doc(mainRef, docID), {});
 
     //Stores each image into firebase storage
     try {

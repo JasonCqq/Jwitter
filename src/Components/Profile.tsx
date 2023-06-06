@@ -150,6 +150,11 @@ const Profile = () => {
       transitionLeave={true}
     >
       <div className="main-profile">
+        <div className="info-bar">
+          {" "}
+          <h1>Profile</h1>
+        </div>
+
         <div className="profile-banner">
           <div className="profile-follow">
             <img
@@ -159,7 +164,7 @@ const Profile = () => {
               }
             ></img>
             {userProfile === user?.uid ? (
-              <div className="editPhoto">
+              <div className="editPhoto button">
                 <input
                   id="pfpFile"
                   type="file"
@@ -170,7 +175,7 @@ const Profile = () => {
                 <label htmlFor="pfpFile">Edit Photo</label>
               </div>
             ) : (
-              <button>Follow</button>
+              <button className="button">Follow</button>
             )}
           </div>
 

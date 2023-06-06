@@ -8,6 +8,14 @@
   border-right: 1px solid #38444d;
   color: white;
 
+  .info-bar {
+    h1 {
+      padding: 15px;
+      font-size: 1.25rem;
+      border-bottom: 1px solid #38444d;
+    }
+  }
+
   .profile-banner {
     font-size: 1rem;
     width: 100%;
@@ -28,7 +36,7 @@
         font-weight: bold;
       }
 
-      .editPhoto {
+      .button {
         border: none;
         margin-right: 5vw;
         margin-bottom: 4vh;

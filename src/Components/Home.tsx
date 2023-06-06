@@ -9,6 +9,8 @@ import {
   app,
   getFirestore,
   addDoc,
+  onSnapshot,
+  query,
 } from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
 import uniqid from "uniqid";
@@ -19,10 +21,56 @@ import { BsFillPatchCheckFill } from "react-icons/bs";
 import { BsThreeDots } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
+interface Tweet {
+  comments: number;
+  docID: string;
+  images: [];
+  likes: number;
+  timestamp: string;
+  tweetText: {
+    textValue: string;
+  };
+  userID: string;
+  userName: string;
+  userProfileURL: string;
+}
+
 function Home() {
   const { user } = useGlobalContext();
-  const [tweets, setTweets] = useState<any[]>([]);
+  const [tweets, setTweets] = useState<Tweet[]>([]);
   const [reveal, setReveal] = useState(false);
+  const [newTweets, setNewTweets] = useState(0);
+
+  useEffect(() => {
+    displayData();
+  }, []);
+
+  useEffect(() => {
+    const fetchTweets = async () => {
+      const db = getFirestore(app);
+      const usersRef = collection(db, "users");
+      const userSnap = await getDocs(usersRef);
+
+      const unsubscribe = onSnapshot(
+        collection(db, "allTweets"),
+        (snapshot) => {
+          console.log("SNAPSHOT", snapshot);
+          snapshot.docChanges().forEach((change) => {
+            console.log("CHANGE:", change);
+            if (change.type === "added") {
+              setNewTweets((prevNewTweets) => prevNewTweets + 1);
+              console.log(newTweets);
+            }
+          });
+        }
+      );
+
+      return () => {
+        unsubscribe();
+      };
+    };
+    fetchTweets();
+  }, []);
 
   const revealFunction = () => {
     setReveal(!reveal);
@@ -39,6 +87,7 @@ function Home() {
 
   //Displays tweets in database
   const displayData = async () => {
+    console.log("DISPLAYING");
     const db = getFirestore(app);
 
     const collectionSnapshot = await getDocs(collection(db, "users"));
@@ -70,7 +119,6 @@ function Home() {
   };
   //Displays images from tweet
   const mapImages = (image: any[]) => {
-    console.log;
     return (
       <>
         {image.map((img, index) => (
@@ -82,7 +130,7 @@ function Home() {
 
   useEffect(() => {
     displayData();
-  }, [user]);
+  }, [newTweets]);
 
   return (
     <CSSTransitionGroup
@@ -93,10 +141,10 @@ function Home() {
       transitionLeave={true}
     >
       <div className="main-home">
-        {/* <div className="info-bar">
+        <div className="info-bar">
           {" "}
           <h1>Home</h1>
-        </div> */}
+        </div>
 
         <div id="tweets">
           {tweets.map((tweet) => {
@@ -123,7 +171,7 @@ function Home() {
                 <div className="tweet-body">
                   <p>{tweet?.tweetText.textValue}</p>
                   <div>
-                    {tweet.images === "" ? null : mapImages(tweet.images)}
+                    {tweet.images.length === 0 ? null : mapImages(tweet.images)}
                   </div>
                 </div>
 
