@@ -14,17 +14,17 @@
   .createAccount-window {
     background-color: #15202b;
     margin: auto;
-    width: 35vw;
+    width: 30vw;
     height: 75vh;
     border-radius: 50px;
 
     .exitButton {
-      padding: 15px 25px;
+      padding: 15px 30px;
       border-top-left-radius: 50px;
 
       &:hover {
         cursor: pointer;
-        background-color: #7856ff;
+        color: #7856ff;
       }
     }
 
@@ -50,7 +50,10 @@
           height: 6vh;
           width: 100%;
           border: none;
-          background-color: #273340;
+          background: transparent;
+          color: white;
+          font-weight: 600;
+
           &:focus {
             border: none;
             outline: none;
@@ -64,10 +67,13 @@
           font-size: 1.25rem;
           border: none;
           background-color: #7856ff;
+          color: white;
+          font-weight: bold;
+          border-radius: 50px;
 
           &:hover {
             cursor: pointer;
-            border: 1px solid white;
+            background-color: #653ffc;
           }
         }
       }

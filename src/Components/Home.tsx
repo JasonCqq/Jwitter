@@ -15,10 +15,27 @@ import uniqid from "uniqid";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { BsBookmark } from "react-icons/bs";
+import { BsFillPatchCheckFill } from "react-icons/bs";
+import { BsThreeDots } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 function Home() {
   const { user } = useGlobalContext();
   const [tweets, setTweets] = useState<any[]>([]);
+  const [reveal, setReveal] = useState(false);
+
+  const revealFunction = () => {
+    setReveal(!reveal);
+  };
+
+  const revealContainer = () => {
+    return (
+      <div id="revealContainer">
+        <p>Follow</p>
+        <p>Profile</p>
+      </div>
+    );
+  };
 
   //Displays tweets in database
   const displayData = async () => {
@@ -45,7 +62,7 @@ function Home() {
       (a: { timestamp: string }, b: { timestamp: string }) => {
         const timestampA = new Date(a.timestamp).getTime();
         const timestampB = new Date(b.timestamp).getTime();
-        return timestampA - timestampB;
+        return timestampB - timestampA;
       }
     );
 
@@ -67,28 +84,6 @@ function Home() {
     displayData();
   }, [user]);
 
-  const likeFunction = async (targetUser: string, id: string) => {
-    const db = getFirestore(app);
-
-    const tweetRef = doc(db, "users", `${targetUser}`, "tweets", `${id}`);
-    const tweetSnap = await getDoc(tweetRef);
-
-    const userSnap = await getDocs(
-      collection(db, "users", `${user?.uid}`, "likedTweets")
-    );
-
-    console.log(userSnap);
-    for (const snap of userSnap.docs) {
-      if (snap.id === user?.uid) {
-        continue;
-      }
-
-      if (snap.id !== user?.uid) {
-        console.log(tweetSnap);
-      }
-    }
-  };
-
   return (
     <CSSTransitionGroup
       transitionName="example"
@@ -98,20 +93,31 @@ function Home() {
       transitionLeave={true}
     >
       <div className="main-home">
-        <div className="info-bar">
+        {/* <div className="info-bar">
           {" "}
           <h1>Home</h1>
-        </div>
-
-        {/* Things to fix: Adding user's handle,  */}
+        </div> */}
 
         <div id="tweets">
           {tweets.map((tweet) => {
             return (
               <div className="tweet" key={uniqid()}>
                 <div className="tweet-handle">
-                  <img src={tweet?.userProfileURL}></img>
-                  <p>{tweet?.userName}</p>
+                  <Link to={`/profile/${tweet.userID}`}>
+                    <div className="profile-handle">
+                      <img src={tweet?.userProfileURL}></img>
+                      <p>{tweet?.userName} </p>
+                    </div>
+                  </Link>
+
+                  <BsFillPatchCheckFill size={15} color="#1D9BF0" />
+                  <BsThreeDots
+                    size={15}
+                    color="white"
+                    className="follow-button"
+                    onClick={() => revealFunction()}
+                  />
+                  {/* {reveal && revealContainer()} */}
                 </div>
 
                 <div className="tweet-body">
@@ -123,21 +129,21 @@ function Home() {
 
                 <div className="tweet-stat">
                   <div className="tweet-stat-container">
-                    <AiOutlineHeart
-                      className="tweet-heart"
-                      size={20}
-                      color="#7856ff"
-                      onClick={() => likeFunction(tweet.userID, tweet.docID)}
-                    />{" "}
-                    <p>{tweet?.likes}</p>
-                  </div>
-                  <div className="tweet-stat-container">
                     <FaRegComment
                       className="tweet-comment"
                       size={17.5}
                       color="#7856ff"
                     />{" "}
                     <p>{tweet?.comments}</p>
+                  </div>
+
+                  <div className="tweet-stat-container">
+                    <AiOutlineHeart
+                      className="tweet-heart"
+                      size={20}
+                      color="#7856ff"
+                    />{" "}
+                    <p>{tweet?.likes}</p>
                   </div>
 
                   <div className="tweet-stat-container">

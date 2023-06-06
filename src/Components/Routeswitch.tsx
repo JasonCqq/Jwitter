@@ -60,7 +60,8 @@ const RouteSwitch = () => {
           <Routes>
             <Route path="/" element={<Home />}></Route>
             <Route path="/settings" element={<Settings />}></Route>
-            <Route path="/profile" element={<Profile />}></Route>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:userId" element={<Profile />} />
           </Routes>
           <RightSidebar />
           <SignupFooter />

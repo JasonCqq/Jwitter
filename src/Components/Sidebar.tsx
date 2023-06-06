@@ -154,9 +154,11 @@ const Sidebar = () => {
           </a>
         </div>
 
-        <button id="tweetButton" onClick={() => openTweetWindow()}>
-          Tweet
-        </button>
+        {user ? (
+          <button id="tweetButton" onClick={() => openTweetWindow()}>
+            Tweet
+          </button>
+        ) : null}
 
         {user ? profile() : null}
       </nav>

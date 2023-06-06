@@ -37,7 +37,6 @@ type UserData = {
 
 const TweetPopUp = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
-
   // User profile picture
   // Image option
   // Textfield with character limit
@@ -79,11 +78,11 @@ const TweetPopUp = () => {
     const AMPM = hour < 12 ? "AM" : "PM";
     const newHour = hour < 12 ? hour : hour - 12;
 
-    const userRef = collection(db, "users", `${user?.uid}`, "tweets");
-
     //Tweet Text
     const text = document.getElementById("tweetText") as HTMLTextAreaElement;
     const textValue = text.value;
+
+    const userRef = collection(db, "users", `${user?.uid}`, "tweets");
 
     const docRef = await addDoc(userRef, {
       tweetText: { textValue },

@@ -1,7 +1,7 @@
 .main-home {
   box-sizing: border-box;
   height: auto;
-  width: 50vw;
+  width: max(600px);
   margin-left: 25vw;
   margin-right: 25vw;
   background-color: #15202b;
@@ -16,6 +16,8 @@
     width: 49.85vw;
     height: 8vh;
     border-bottom: 1px solid #38444d;
+    display: flex;
+    align-items: center;
 
     h1 {
       padding: 10px;
@@ -25,44 +27,81 @@
   #tweets {
     display: flex;
     flex-direction: column;
-    padding-top: 10vh;
     width: 100%;
     height: 100%;
-    gap: 15px;
 
     .tweet {
-      border-bottom: 1px solid #38444d;
+      border-top: 1px solid #38444d;
       width: calc(100%);
       height: auto;
       display: flex;
       flex-direction: column;
-      gap: 5%;
+      padding-top: 5px;
+
+      &:hover {
+        background-color: #8b98a507;
+      }
 
       .tweet-handle {
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-left: 3vw;
+        margin-left: 2vw;
         font-weight: bold;
+
+        .profile-handle {
+          display: flex;
+          align-items: center;
+          border-radius: 25px;
+          padding: 3px;
+          &:hover {
+            background-color: #8b98a536;
+          }
+
+          p {
+            color: white;
+            font-size: 0.85rem;
+            margin-left: 10px;
+          }
+        }
+
+        .follow-button {
+          margin-left: auto;
+          margin-right: 2.75vw;
+          border-radius: 25px;
+          padding: 5px;
+
+          &:hover {
+            background-color: #8b98a59d;
+            cursor: pointer;
+          }
+
+          #revealContainer {
+            background-color: white;
+            width: 50vw;
+            height: 50vh;
+            position: fixed;
+          }
+        }
 
         img {
           border-radius: 50px;
-          height: 50px;
-          width: 50px;
+          height: 42px;
+          width: 42px;
         }
       }
 
       .tweet-body {
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 5px;
         margin-left: 3vw;
-        padding-top: 20px;
 
         p {
-          font-size: 1.1rem;
+          font-size: 1rem;
           font-weight: 400;
-          margin-left: 5px;
+          margin-left: 3.5vw;
+          padding-top: 2px;
         }
 
         img {
@@ -75,14 +114,13 @@
 
       .tweet-stat {
         display: flex;
-        gap: 10%;
+        gap: 3%;
         align-items: center;
-        margin-left: 1vw;
+        margin-left: 5vw;
         margin-top: auto;
         margin-bottom: 2%;
-        padding: 2%;
-        justify-content: space-between;
         color: #8b98a5;
+        padding-top: 10px;
 
         div {
           width: 5vw;
@@ -112,7 +150,8 @@
         }
 
         .tweet-time {
-          margin-right: 5vh;
+          margin-left: auto;
+          margin-right: 2vw;
           color: #8b98a5;
           font-size: 0.8rem;
         }

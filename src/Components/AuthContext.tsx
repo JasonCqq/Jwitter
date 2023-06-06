@@ -32,3 +32,6 @@ export default function Context({ children }: ContextProp) {
 export const useGlobalContext = (): ValueProp => {
   return useContext(AppContext);
 };
+
+//ref, getStorage, uploadBytesResumable, getDownloadURL
+//updateDoc

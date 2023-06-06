@@ -13,6 +13,10 @@ import {
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import uniqid from "uniqid";
+import { useParams } from "react-router-dom";
+import { BsBookmark } from "react-icons/bs";
+import { Link } from "react-router-dom";
+import { BsFillPatchCheckFill } from "react-icons/bs";
 
 type UserData = {
   settings: {
@@ -27,16 +31,34 @@ type UserData = {
 
 const Profile = () => {
   const { user } = useGlobalContext();
+  const { userId } = useParams();
+
   const [tweets, setTweets] = useState<any[]>([]);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [noTweets, setNoTweets] = useState(false);
+  const [userProfile, setUserProfile] = useState("");
+
+  useEffect(() => {
+    if (userProfile) {
+      displayData();
+      getUserData();
+    }
+  }, [userProfile]);
+
+  useEffect(() => {
+    if (!userId) {
+      setUserProfile(user?.uid || "");
+    } else if (userId) {
+      setUserProfile(userId);
+    }
+  }, []);
 
   //Displays tweets in database
   const displayData = async () => {
     const db = getFirestore(app);
 
     const collectionSnapshot = await getDocs(
-      collection(db, "users", `${user?.uid}`, "tweets")
+      collection(db, "users", userProfile, "tweets")
     );
     const queries: any = [];
 
@@ -57,7 +79,6 @@ const Profile = () => {
     setTweets(newQueries);
   };
   const mapImages = (image: any[]) => {
-    console.log;
     return (
       <>
         {image.map((img, index) => (
@@ -69,8 +90,9 @@ const Profile = () => {
 
   const getUserData = async () => {
     const db = getFirestore(app);
-    const userRef = doc(db, "users", `${user?.uid}`);
+    const userRef = doc(db, "users", userProfile);
     const userSnap = await getDoc(userRef);
+    console.log(userProfile);
 
     if (userSnap.exists()) {
       setUserData(userSnap.data() as UserData);
@@ -79,11 +101,6 @@ const Profile = () => {
       return;
     }
   };
-
-  useEffect(() => {
-    displayData();
-    getUserData();
-  }, [user]);
 
   return (
     <CSSTransitionGroup
@@ -97,7 +114,7 @@ const Profile = () => {
         <div className="profile-banner">
           <img
             src={
-              user?.photoURL ||
+              userData?.settings.photoURL ||
               "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
             }
           ></img>
@@ -106,41 +123,58 @@ const Profile = () => {
           <h3>Tweets</h3>
         </div>
 
-        <div className="profile-tweets">
-          {tweets.map((tweet) => {
-            return (
-              <div className="tweet" key={uniqid()}>
-                <div className="tweet-handle">
-                  <img src={tweet?.userProfileURL}></img>
-                  <p>{tweet?.userName}</p>
-                </div>
-
-                <div className="tweet-body">
-                  <p>{tweet?.tweetText.textValue}</p>
-                  <div>
-                    {tweet.images === "" ? null : mapImages(tweet.images)}
+        {tweets.map((tweet) => {
+          return (
+            <div className="tweet" key={uniqid()}>
+              <div className="tweet-handle">
+                <Link to={`/profile/${tweet.userID}`}>
+                  <div className="profile-handle">
+                    <img src={tweet?.userProfileURL}></img>
+                    <p>{tweet?.userName} </p>
                   </div>
-                </div>
+                </Link>
 
-                <div className="tweet-stat">
-                  <p>
-                    <AiOutlineHeart size={20} color="#7856ff" /> {tweet?.likes}
-                  </p>
-                  <p>
-                    <FaRegComment size={20} color="#7856ff" /> {tweet?.comments}
-                  </p>
-                  <p className="tweet-time">Posted {tweet?.timestamp}</p>
+                <BsFillPatchCheckFill size={15} color="#1D9BF0" />
+              </div>
+
+              <div className="tweet-body">
+                <p>{tweet?.tweetText.textValue}</p>
+                <div>
+                  {tweet.images === "" ? null : mapImages(tweet.images)}
                 </div>
               </div>
-            );
-          })}
 
-          {noTweets ? (
-            <div className="tweet" key={uniqid()}>
-              <h2 className="empty-tweets">No More Tweets...</h2>
+              <div className="tweet-stat">
+                <div className="tweet-stat-container">
+                  <FaRegComment
+                    className="tweet-comment"
+                    size={17.5}
+                    color="#7856ff"
+                  />{" "}
+                  <p>{tweet?.comments}</p>
+                </div>
+
+                <div className="tweet-stat-container">
+                  <AiOutlineHeart
+                    className="tweet-heart"
+                    size={20}
+                    color="#7856ff"
+                  />{" "}
+                  <p>{tweet?.likes}</p>
+                </div>
+
+                <div className="tweet-stat-container">
+                  <BsBookmark
+                    className="tweet-comment"
+                    size={17.5}
+                    color="#7856ff"
+                  />{" "}
+                </div>
+                <p className="tweet-time">Posted {tweet?.timestamp}</p>
+              </div>
             </div>
-          ) : null}
-        </div>
+          );
+        })}
       </div>
     </CSSTransitionGroup>
   );
