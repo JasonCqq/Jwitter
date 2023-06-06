@@ -1,9 +1,9 @@
 .right-sidebar {
   position: fixed;
-  margin-left: 76vw;
   width: 25vw;
   height: 100vh;
   top: 0;
+  margin-left: calc(25vw + 600px + 2vw);
   display: flex;
   flex-direction: column;
   align-items: center;

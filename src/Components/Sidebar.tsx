@@ -22,6 +22,7 @@ export const TweetWindowContext = createContext({
 const Sidebar = () => {
   const { user, setUser } = useGlobalContext();
   const [username, setUsername] = useState("");
+  const [pfp, setPfp] = useState("");
 
   const getUserData = async () => {
     const db = getFirestore(app);
@@ -30,6 +31,7 @@ const Sidebar = () => {
 
     if (userSnap.exists()) {
       setUsername(userSnap.data().settings.username);
+      setPfp(userSnap.data().settings.photoURL);
     } else {
       return;
     }
@@ -72,7 +74,7 @@ const Sidebar = () => {
             <img
               className="profile-avatar"
               src={
-                user?.photoURL ??
+                pfp ||
                 "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
               }
               alt="User Avatar"

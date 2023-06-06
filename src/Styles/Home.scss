@@ -9,21 +9,6 @@
   border-right: 1px solid #38444d;
   color: white;
 
-  .info-bar {
-    font-size: 1.5rem;
-    background-color: #15202b;
-    position: fixed;
-    width: 49.85vw;
-    height: 8vh;
-    border-bottom: 1px solid #38444d;
-    display: flex;
-    align-items: center;
-
-    h1 {
-      padding: 10px;
-    }
-  }
-
   #tweets {
     display: flex;
     flex-direction: column;
@@ -101,7 +86,6 @@
           font-size: 1rem;
           font-weight: 400;
           margin-left: 3.5vw;
-          padding-top: 2px;
         }
 
         img {

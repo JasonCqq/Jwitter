@@ -14,8 +14,72 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 10px;
+
+    .profile-follow {
+      display: flex;
+      gap: 15px;
+      width: 80%;
+      margin-left: 4vw;
+      align-items: flex-end;
+      justify-content: space-between;
+
+      p {
+        font-weight: bold;
+      }
+
+      .editPhoto {
+        border: none;
+        margin-right: 5vw;
+        margin-bottom: 4vh;
+        height: 40px;
+        width: 30%;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 50px;
+        background-color: #7856ff;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        input {
+          display: none;
+        }
+
+        &:hover {
+          cursor: pointer;
+          background-color: #653ffc;
+        }
+      }
+    }
+
+    .profile-description {
+      margin-left: 5vw;
+      display: flex;
+      flex-direction: column;
+
+      p {
+        font-size: 15px;
+      }
+
+      div {
+        display: flex;
+        gap: 5px;
+        align-items: flex-end;
+        margin-top: 1vh;
+
+        p {
+          font-weight: 600;
+        }
+
+        span {
+          font-size: 0.85rem;
+          color: #8b98a5;
+        }
+      }
+    }
 
     h1 {
       padding-bottom: 3vh;

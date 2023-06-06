@@ -8,6 +8,7 @@ import { CreateAccountWindow, SignInWindow } from "./sharedFunctions";
 import Profile from "./Profile";
 import Settings from "./Settings";
 import Loading from "./Loading";
+import uniqid from "uniqid";
 
 export const LogInContext = createContext({
   createWindowOpen: false,
@@ -61,7 +62,10 @@ const RouteSwitch = () => {
             <Route path="/" element={<Home />}></Route>
             <Route path="/settings" element={<Settings />}></Route>
             <Route path="/profile" element={<Profile />} />
-            <Route path="/profile/:userId" element={<Profile />} />
+            <Route
+              path="/profile/:userId"
+              element={<Profile key={uniqid()} />}
+            />
           </Routes>
           <RightSidebar />
           <SignupFooter />

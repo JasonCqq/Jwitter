@@ -92,7 +92,7 @@ const TweetPopUp = () => {
       images: "",
       userID: `${user?.uid}`,
       userProfileURL: `${
-        user?.photoURL ||
+        userData?.settings.photoURL ||
         "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
       }`,
       userName: `${userData?.settings.username}`,
@@ -107,7 +107,6 @@ const TweetPopUp = () => {
         const filePath = `${user?.uid}/${docRef.id}/${image.name}`;
         const newImageRef = ref(getStorage(), filePath);
         const fileSnapshot = await uploadBytesResumable(newImageRef, image);
-
         const publicImageUrl = await getDownloadURL(newImageRef);
 
         return {
@@ -185,7 +184,7 @@ const TweetPopUp = () => {
           <div className="tweet-container-middle">
             <img
               src={
-                user?.photoURL ??
+                userData?.settings?.photoURL ??
                 "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
               }
             ></img>
