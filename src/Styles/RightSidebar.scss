@@ -84,8 +84,9 @@
         gap: 3vh;
         height: 100%;
         width: 100%;
-        overflow: scroll;
+        overflow: auto;
         overflow-x: hidden;
+        padding-right: 10px;
 
         p {
           font-size: 0.75rem;

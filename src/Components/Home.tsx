@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../Styles/Home.scss";
 import { CSSTransitionGroup } from "react-transition-group";
 import {
@@ -13,13 +13,14 @@ import {
   updateDoc,
   arrayRemove,
   arrayUnion,
+  addDoc,
 } from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
 import uniqid from "uniqid";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { BsBookmark } from "react-icons/bs";
-import { BsFillPatchCheckFill } from "react-icons/bs";
+import { BsFillPatchCheckFill, BsFillBookmarkCheckFill } from "react-icons/bs";
 import { BsThreeDots } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
@@ -35,6 +36,7 @@ interface Tweet {
   userID: string;
   userName: string;
   userProfileURL: string;
+  bookmarked: boolean;
 }
 
 interface Image {
@@ -94,7 +96,6 @@ function Home() {
     }
     const userBookmarks = userSnap.data().userArray;
     const userBookmarksSet = new Set(userBookmarks);
-
     //Add/Delete bookmark ID
     if (userBookmarksSet.has(tweetID)) {
       await updateDoc(userRef, {
@@ -115,13 +116,52 @@ function Home() {
       const collectionSnapshot = await getDocs(collection(db, "allTweets"));
       const queries: any = [];
 
-      if (!collectionSnapshot.empty) {
+      //Display without bookmark function if not logged in
+      if (!user) {
         collectionSnapshot.forEach((doc) => {
           const data = {
             key: uniqid(),
             ...doc.data(),
           };
           queries.push(data);
+        });
+
+        const newQueries = queries.sort(
+          (a: { timestamp: string }, b: { timestamp: string }) => {
+            const timestampA = new Date(a.timestamp).getTime();
+            const timestampB = new Date(b.timestamp).getTime();
+            return timestampB - timestampA;
+          }
+        );
+        setTweets(newQueries);
+        return;
+      }
+      //Display with bookmark function if logged in
+      if (!collectionSnapshot.empty) {
+        const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          return;
+        }
+        const userBookmarks = userSnap.data().userArray;
+        const userBookmarksSet = new Set(userBookmarks);
+
+        collectionSnapshot.forEach((doc) => {
+          if (userBookmarksSet.has(doc.id)) {
+            const data = {
+              bookmarked: true,
+              key: uniqid(),
+              ...doc.data(),
+            };
+            queries.push(data);
+          } else if (!userBookmarksSet.has(doc.id)) {
+            const data = {
+              bookmarked: false,
+              key: uniqid(),
+              ...doc.data(),
+            };
+            queries.push(data);
+          }
         });
       }
 
@@ -132,7 +172,6 @@ function Home() {
           return timestampB - timestampA;
         }
       );
-
       setTweets(newQueries);
     } catch (error) {
       console.error(error);
@@ -219,12 +258,27 @@ function Home() {
                   </div>
 
                   <div className="tweet-stat-container">
-                    <BsBookmark
-                      className="tweet-comment"
-                      size={17.5}
-                      color="#7856ff"
-                      onClick={() => bookmarkTweet(tweet.docID)}
-                    />{" "}
+                    {tweet.bookmarked ? (
+                      <BsBookmark
+                        className="tweet-comment"
+                        size={17.5}
+                        color="lightgreen"
+                        onClick={() => {
+                          bookmarkTweet(tweet.docID);
+                        }}
+                      />
+                    ) : (
+                      <BsBookmark
+                        className="tweet-comment"
+                        size={17.5}
+                        color="#7856ff"
+                        onClick={() => {
+                          {
+                            bookmarkTweet(tweet.docID);
+                          }
+                        }}
+                      />
+                    )}
                   </div>
                   <p className="tweet-time">Posted {tweet?.timestamp}</p>
                 </div>

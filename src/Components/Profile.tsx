@@ -14,6 +14,8 @@ import {
   getStorage,
   uploadBytesResumable,
   getDownloadURL,
+  arrayRemove,
+  arrayUnion,
 } from "../Firebase.js";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
@@ -57,6 +59,28 @@ const Profile = () => {
     }
   }, []);
 
+  const bookmarkTweet = async (tweetID: string) => {
+    const db = getFirestore(app);
+    const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      return;
+    }
+    const userBookmarks = userSnap.data().userArray;
+    const userBookmarksSet = new Set(userBookmarks);
+
+    //Add/Delete bookmark ID
+    if (userBookmarksSet.has(tweetID)) {
+      await updateDoc(userRef, {
+        userArray: arrayRemove(tweetID),
+      });
+    } else if (!userBookmarksSet.has(tweetID)) {
+      await updateDoc(userRef, {
+        userArray: arrayUnion(tweetID),
+      });
+    }
+  };
+
   //Displays tweets in database
   const displayData = async () => {
     const db = getFirestore(app);
@@ -67,8 +91,30 @@ const Profile = () => {
     const queries: any = [];
 
     if (!collectionSnapshot.empty) {
+      const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        return;
+      }
+      const userBookmarks = userSnap.data().userArray;
+      const userBookmarksSet = new Set(userBookmarks);
+
       collectionSnapshot.forEach((doc) => {
-        queries.push(doc.data());
+        if (userBookmarksSet.has(doc.id)) {
+          const data = {
+            bookmarked: true,
+            key: uniqid(),
+            ...doc.data(),
+          };
+          queries.push(data);
+        } else if (!userBookmarksSet.has(doc.id)) {
+          const data = {
+            bookmarked: false,
+            key: uniqid(),
+            ...doc.data(),
+          };
+          queries.push(data);
+        }
       });
     }
 
@@ -239,11 +285,27 @@ const Profile = () => {
                 </div>
 
                 <div className="tweet-stat-container">
-                  <BsBookmark
-                    className="tweet-comment"
-                    size={17.5}
-                    color="#7856ff"
-                  />{" "}
+                  {tweet.bookmarked ? (
+                    <BsBookmark
+                      className="tweet-comment"
+                      size={17.5}
+                      color="lightgreen"
+                      onClick={() => {
+                        bookmarkTweet(tweet.docID);
+                      }}
+                    />
+                  ) : (
+                    <BsBookmark
+                      className="tweet-comment"
+                      size={17.5}
+                      color="#7856ff"
+                      onClick={() => {
+                        {
+                          bookmarkTweet(tweet.docID);
+                        }
+                      }}
+                    />
+                  )}
                 </div>
                 <p className="tweet-time">Posted {tweet?.timestamp}</p>
               </div>

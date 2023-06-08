@@ -9,12 +9,15 @@ import {
   getDocs,
   collection,
   getDoc,
+  updateDoc,
+  arrayRemove,
+  arrayUnion,
 } from "../Firebase";
 import { CSSTransitionGroup } from "react-transition-group";
 import { Link } from "react-router-dom";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
-import { BsBookmark } from "react-icons/bs";
+import { BsFillBookmarkCheckFill } from "react-icons/bs";
 import { BsFillPatchCheckFill } from "react-icons/bs";
 import { BsThreeDots } from "react-icons/bs";
 
@@ -87,6 +90,30 @@ const Bookmarks = () => {
       </>
     );
   };
+
+  //Bookmark / Unbookmark
+  const bookmarkTweet = async (tweetID: string) => {
+    const db = getFirestore(app);
+    const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      return;
+    }
+    const userBookmarks = userSnap.data().userArray;
+    const userBookmarksSet = new Set(userBookmarks);
+
+    //Add/Delete bookmark ID
+    if (userBookmarksSet.has(tweetID)) {
+      await updateDoc(userRef, {
+        userArray: arrayRemove(tweetID),
+      });
+    } else if (!userBookmarksSet.has(tweetID)) {
+      await updateDoc(userRef, {
+        userArray: arrayUnion(tweetID),
+      });
+    }
+  };
+
   useEffect(() => {
     retrieveBookmarks();
   }, []);
@@ -158,11 +185,11 @@ const Bookmarks = () => {
                   </div>
 
                   <div className="tweet-stat-container">
-                    <BsBookmark
+                    <BsFillBookmarkCheckFill
                       className="tweet-comment"
                       size={17.5}
                       color="#7856ff"
-                      //   onClick={() => bookmarkTweet(tweet.docID)}
+                      onClick={() => bookmarkTweet(tweet.docID)}
                     />{" "}
                   </div>
                   <p className="tweet-time">Posted {tweet?.timestamp}</p>

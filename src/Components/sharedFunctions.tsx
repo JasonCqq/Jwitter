@@ -59,6 +59,10 @@ function useAuthentication() {
         photoURL: photoURLCheck,
       },
     });
+
+    await setDoc(doc(db, "users", `${user?.uid}`, "bookmarks", "tweets"), {
+      userArray: [],
+    });
   };
 
   useEffect(() => {

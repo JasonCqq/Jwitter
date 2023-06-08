@@ -100,7 +100,7 @@ const TweetPopUp = () => {
         };
       });
 
-      //Adds and submits all the data
+      //Adds and submits to main database
       const mainRef = collection(db, "allTweets");
       const updatedImagesUrls: any = await Promise.all(updatedImages);
       const docRef = await addDoc(mainRef, {
@@ -118,6 +118,20 @@ const TweetPopUp = () => {
       });
       const docID = docRef.id;
       await updateDoc(docRef, { docID });
+
+      await setDoc(doc(db, "users", `${user?.uid}`, "tweets", `${docID}`), {
+        tweetText: { textValue },
+        likes: 0,
+        comments: 0,
+        timestamp: `${newHour}:${minute} ${AMPM}, ${month}/${day}/${year}`,
+        images: updatedImagesUrls,
+        userID: `${user?.uid}`,
+        userProfileURL:
+          userData?.settings.photoURL ||
+          "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6",
+        userName: userData?.settings.username,
+        docID: docID,
+      });
 
       setLoading(false);
     } catch (error: any) {
