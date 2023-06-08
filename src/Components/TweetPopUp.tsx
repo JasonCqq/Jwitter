@@ -100,10 +100,10 @@ const TweetPopUp = () => {
         };
       });
 
-      //Adds and submits all teh data
-      const userRef = collection(db, "users", `${user?.uid}`, "tweets");
+      //Adds and submits all the data
+      const mainRef = collection(db, "allTweets");
       const updatedImagesUrls: any = await Promise.all(updatedImages);
-      const docRef = await addDoc(userRef, {
+      const docRef = await addDoc(mainRef, {
         tweetText: { textValue },
         likes: 0,
         comments: 0,
@@ -118,10 +118,6 @@ const TweetPopUp = () => {
       });
       const docID = docRef.id;
       await updateDoc(docRef, { docID });
-
-      //Add to main tweet collection
-      const mainRef = collection(db, "allTweets");
-      await setDoc(doc(mainRef, docID), {});
 
       setLoading(false);
     } catch (error: any) {

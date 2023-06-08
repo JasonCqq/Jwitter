@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from "react";
-import "../Styles/Home.scss";
-import { CSSTransitionGroup } from "react-transition-group";
+import React, { useEffect } from "react";
+import "../Styles/Bookmarks.scss";
+import { useGlobalContext } from "./AuthContext";
+import { useState } from "react";
 import {
-  collection,
+  getFirestore,
+  app,
   doc,
   getDocs,
-  app,
-  getFirestore,
-  onSnapshot,
-  setDoc,
+  collection,
   getDoc,
-  updateDoc,
-  arrayRemove,
-  arrayUnion,
-} from "../Firebase.js";
-import { useGlobalContext } from "./AuthContext";
-import uniqid from "uniqid";
+} from "../Firebase";
+import { CSSTransitionGroup } from "react-transition-group";
+import { Link } from "react-router-dom";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { BsBookmark } from "react-icons/bs";
 import { BsFillPatchCheckFill } from "react-icons/bs";
 import { BsThreeDots } from "react-icons/bs";
-import { Link } from "react-router-dom";
 
 interface Tweet {
   comments: number;
@@ -42,50 +37,11 @@ interface Image {
   storageUri: string;
 }
 
-function Home() {
-  const [tweets, setTweets] = useState<Tweet[]>([]);
-  const [reveal, setReveal] = useState(false);
-  const [newTweets, setNewTweets] = useState(0);
+const Bookmarks = () => {
   const { user } = useGlobalContext();
+  const [tweets, setTweets] = useState<Tweet[]>([]);
 
-  //Adds a snapshot listener on tweets collection.
-  useEffect(() => {
-    const fetchTweets = async () => {
-      const db = getFirestore(app);
-      const unsubscribe = onSnapshot(
-        collection(db, "allTweets"),
-        (snapshot) => {
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === "added") {
-              setNewTweets((prevNewTweets) => prevNewTweets + 1);
-            }
-          });
-        }
-      );
-      return () => {
-        unsubscribe();
-      };
-    };
-    fetchTweets();
-  }, []);
-  useEffect(() => {
-    displayData();
-  }, [newTweets]);
-
-  //More options
-  const revealFunction = () => {
-    setReveal(!reveal);
-  };
-  const revealContainer = () => {
-    return (
-      <div id="revealContainer">
-        <p>Follow</p>
-        <p>Profile</p>
-      </div>
-    );
-  };
-
-  const bookmarkTweet = async (tweetID: string) => {
+  const retrieveBookmarks = async () => {
     const db = getFirestore(app);
     const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
     const userSnap = await getDoc(userRef);
@@ -94,50 +50,30 @@ function Home() {
     }
     const userBookmarks = userSnap.data().userArray;
     const userBookmarksSet = new Set(userBookmarks);
-
-    //Add/Delete bookmark ID
-    if (userBookmarksSet.has(tweetID)) {
-      await updateDoc(userRef, {
-        userArray: arrayRemove(tweetID),
-      });
-    } else if (!userBookmarksSet.has(tweetID)) {
-      await updateDoc(userRef, {
-        userArray: arrayUnion(tweetID),
-      });
-    }
-  };
-
-  //Displays tweets in database
-  const displayData = async () => {
-    try {
-      setTweets([]);
-      const db = getFirestore(app);
-      const collectionSnapshot = await getDocs(collection(db, "allTweets"));
-      const queries: any = [];
-
-      if (!collectionSnapshot.empty) {
-        collectionSnapshot.forEach((doc) => {
-          const data = {
-            key: uniqid(),
-            ...doc.data(),
-          };
-          queries.push(data);
-        });
-      }
-
-      const newQueries = queries.sort(
-        (a: { timestamp: string }, b: { timestamp: string }) => {
-          const timestampA = new Date(a.timestamp).getTime();
-          const timestampB = new Date(b.timestamp).getTime();
-          return timestampB - timestampA;
+    const mainRef = await getDocs(collection(db, "allTweets"));
+    const tweetsArray: any = [];
+    // Retrieve all Tweets from database
+    if (!mainRef.empty) {
+      console.log(mainRef.docs);
+      mainRef.docs.forEach((doc) => {
+        if (userBookmarksSet.has(doc.id)) {
+          tweetsArray.push(doc.data());
         }
-      );
-
-      setTweets(newQueries);
-    } catch (error) {
-      console.error(error);
+      });
     }
+
+    //Sort tweets by time
+    const newTweets = tweetsArray.sort(
+      (a: { timestamp: string }, b: { timestamp: string }) => {
+        const timestampA = new Date(a.timestamp).getTime();
+        const timestampB = new Date(b.timestamp).getTime();
+        return timestampB - timestampA;
+      }
+    );
+
+    setTweets(newTweets);
   };
+
   //Renders images from tweet
   const mapImages = (image: Image[] = []) => {
     if (image.length === 0) {
@@ -151,6 +87,9 @@ function Home() {
       </>
     );
   };
+  useEffect(() => {
+    retrieveBookmarks();
+  }, []);
 
   return (
     <CSSTransitionGroup
@@ -160,13 +99,13 @@ function Home() {
       transitionEnter={true}
       transitionLeave={true}
     >
-      <div className="main-home">
+      <div className="main-bookmarks">
         <div className="info-bar">
           {" "}
-          <h1>Home</h1>
+          <h1>Your Bookmarks</h1>
         </div>
 
-        <div id="tweets">
+        <div className="bookmarked-tweets">
           {tweets.map((tweet) => {
             return (
               <div className="tweet" key={tweet.docID}>
@@ -223,7 +162,7 @@ function Home() {
                       className="tweet-comment"
                       size={17.5}
                       color="#7856ff"
-                      onClick={() => bookmarkTweet(tweet.docID)}
+                      //   onClick={() => bookmarkTweet(tweet.docID)}
                     />{" "}
                   </div>
                   <p className="tweet-time">Posted {tweet?.timestamp}</p>
@@ -235,6 +174,6 @@ function Home() {
       </div>
     </CSSTransitionGroup>
   );
-}
+};
 
-export default Home;
+export default Bookmarks;

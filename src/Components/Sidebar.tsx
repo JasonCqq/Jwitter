@@ -118,7 +118,7 @@ const Sidebar = () => {
         </div>
 
         <div className="sidebarItem">
-          <Link to="/">
+          <Link to="/bookmarks">
             <BsBookmark size={30} />
             <span>Bookmarks</span>
           </Link>

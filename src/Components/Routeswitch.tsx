@@ -9,6 +9,7 @@ import Profile from "./Profile";
 import Settings from "./Settings";
 import Loading from "./Loading";
 import uniqid from "uniqid";
+import Bookmarks from "./Bookmarks";
 
 export const LogInContext = createContext({
   createWindowOpen: false,
@@ -60,6 +61,7 @@ const RouteSwitch = () => {
           <Sidebar />
           <Routes>
             <Route path="/" element={<Home />}></Route>
+            <Route path="/bookmarks" element={<Bookmarks />}></Route>
             <Route path="/settings" element={<Settings />}></Route>
             <Route path="/profile" element={<Profile />} />
             <Route
