@@ -7,8 +7,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   getFirestore,
-  collection,
-  addDoc,
   app,
   doc,
   setDoc,

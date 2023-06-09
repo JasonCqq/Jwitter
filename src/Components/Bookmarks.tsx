@@ -9,17 +9,10 @@ import {
   getDocs,
   collection,
   getDoc,
-  updateDoc,
-  arrayRemove,
-  arrayUnion,
 } from "../Firebase";
 import { CSSTransitionGroup } from "react-transition-group";
-import { Link } from "react-router-dom";
-import { AiOutlineHeart } from "react-icons/ai";
-import { FaRegComment } from "react-icons/fa";
-import { BsFillBookmarkCheckFill } from "react-icons/bs";
-import { BsFillPatchCheckFill } from "react-icons/bs";
-import { BsThreeDots } from "react-icons/bs";
+import uniqid from "uniqid";
+import Post from "./Post";
 
 interface Tweet {
   comments: number;
@@ -43,6 +36,13 @@ interface Image {
 const Bookmarks = () => {
   const { user } = useGlobalContext();
   const [tweets, setTweets] = useState<Tweet[]>([]);
+  const [bookmarksSet, setBookmarksSet] = useState<Set<string>>(
+    new Set<string>()
+  );
+
+  useEffect(() => {
+    retrieveBookmarks();
+  }, []);
 
   const retrieveBookmarks = async () => {
     const db = getFirestore(app);
@@ -52,12 +52,13 @@ const Bookmarks = () => {
       return;
     }
     const userBookmarks = userSnap.data().userArray;
-    const userBookmarksSet = new Set(userBookmarks);
+    const userBookmarksSet = new Set<string>(userBookmarks);
+    setBookmarksSet(userBookmarksSet);
+
     const mainRef = await getDocs(collection(db, "allTweets"));
     const tweetsArray: any = [];
-    // Retrieve all Tweets from database
+    // Retrieve all bookmarked weets from database
     if (!mainRef.empty) {
-      console.log(mainRef.docs);
       mainRef.docs.forEach((doc) => {
         if (userBookmarksSet.has(doc.id)) {
           tweetsArray.push(doc.data());
@@ -77,47 +78,6 @@ const Bookmarks = () => {
     setTweets(newTweets);
   };
 
-  //Renders images from tweet
-  const mapImages = (image: Image[] = []) => {
-    if (image.length === 0) {
-      return;
-    }
-    return (
-      <>
-        {image.map((img) => (
-          <img key={img.storageUri} src={img.images} />
-        ))}
-      </>
-    );
-  };
-
-  //Bookmark / Unbookmark
-  const bookmarkTweet = async (tweetID: string) => {
-    const db = getFirestore(app);
-    const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
-      return;
-    }
-    const userBookmarks = userSnap.data().userArray;
-    const userBookmarksSet = new Set(userBookmarks);
-
-    //Add/Delete bookmark ID
-    if (userBookmarksSet.has(tweetID)) {
-      await updateDoc(userRef, {
-        userArray: arrayRemove(tweetID),
-      });
-    } else if (!userBookmarksSet.has(tweetID)) {
-      await updateDoc(userRef, {
-        userArray: arrayUnion(tweetID),
-      });
-    }
-  };
-
-  useEffect(() => {
-    retrieveBookmarks();
-  }, []);
-
   return (
     <CSSTransitionGroup
       transitionName="example"
@@ -135,66 +95,7 @@ const Bookmarks = () => {
         <div className="bookmarked-tweets">
           {tweets.map((tweet) => {
             return (
-              <div className="tweet" key={tweet.docID}>
-                <div className="tweet-handle">
-                  <Link to={`/profile/${tweet.userID}`}>
-                    <div className="profile-handle">
-                      <img src={tweet?.userProfileURL}></img>
-                      <p>{tweet?.userName} </p>
-                    </div>
-                  </Link>
-
-                  <BsFillPatchCheckFill size={15} color="#1D9BF0" />
-                  <BsThreeDots
-                    size={15}
-                    color="white"
-                    className="follow-button"
-                    // onClick={() => revealFunction()}
-                  />
-                  {/* {reveal && revealContainer()} */}
-                </div>
-
-                <div className="tweet-body">
-                  <p>{tweet?.tweetText.textValue}</p>
-                  <div>
-                    {tweet.images.length === undefined ? (
-                      <div>Loading...</div>
-                    ) : (
-                      mapImages(tweet.images)
-                    )}
-                  </div>
-                </div>
-
-                <div className="tweet-stat">
-                  <div className="tweet-stat-container">
-                    <FaRegComment
-                      className="tweet-comment"
-                      size={17.5}
-                      color="#7856ff"
-                    />{" "}
-                    <p>{tweet?.comments}</p>
-                  </div>
-
-                  <div className="tweet-stat-container">
-                    <AiOutlineHeart
-                      className="tweet-heart"
-                      size={20}
-                      color="#7856ff"
-                    />{" "}
-                    <p>{tweet?.likes}</p>
-                  </div>
-
-                  <div className="tweet-stat-container">
-                    <BsFillBookmarkCheckFill
-                      className="tweet-comment"
-                      size={17.5}
-                      color="#7856ff"
-                      onClick={() => bookmarkTweet(tweet.docID)}
-                    />{" "}
-                  </div>
-                  <p className="tweet-time">Posted {tweet?.timestamp}</p>
-                </div>
-              </div>
+              <Post tweet={tweet} userBookmarks={bookmarksSet} key={uniqid()} />
             );
           })}
         </div>

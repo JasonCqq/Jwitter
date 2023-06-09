@@ -41,6 +41,17 @@
         margin-left: 2vw;
         font-weight: bold;
 
+        .tweet-options {
+          display: flex;
+          flex-direction: column;
+          margin-left: auto;
+
+          p {
+            font-size: 0.85rem;
+            padding-bottom: 5px;
+          }
+        }
+
         .profile-handle {
           display: flex;
           align-items: center;
@@ -58,21 +69,17 @@
         }
 
         .follow-button {
+          border: none;
           margin-left: auto;
           margin-right: 2.75vw;
           border-radius: 25px;
           padding: 5px;
+          color: white;
+          font-weight: bold;
 
           &:hover {
-            background-color: #8b98a59d;
+            background-color: #8b98a54e;
             cursor: pointer;
-          }
-
-          #revealContainer {
-            background-color: white;
-            width: 50vw;
-            height: 50vh;
-            position: fixed;
           }
         }
 
