@@ -39,9 +39,13 @@ const Bookmarks = () => {
   const [bookmarksSet, setBookmarksSet] = useState<Set<string>>(
     new Set<string>()
   );
+  const [followingSet, setFollowingSet] = useState<Set<string>>(
+    new Set<string>()
+  );
 
   useEffect(() => {
     retrieveBookmarks();
+    createFollowingSet();
   }, []);
 
   const retrieveBookmarks = async () => {
@@ -77,6 +81,18 @@ const Bookmarks = () => {
 
     setTweets(newTweets);
   };
+  //Users Reference
+  const createFollowingSet = async () => {
+    const db = getFirestore(app);
+    const userRef = doc(db, "users", `${user?.uid}`, "following");
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      return;
+    }
+    const userFollowing = userSnap.data().userArray;
+    const userFollowingSet = new Set(userFollowing);
+    setFollowingSet(userFollowingSet as Set<string>);
+  };
 
   return (
     <CSSTransitionGroup
@@ -95,7 +111,12 @@ const Bookmarks = () => {
         <div className="bookmarked-tweets">
           {tweets.map((tweet) => {
             return (
-              <Post tweet={tweet} userBookmarks={bookmarksSet} key={uniqid()} />
+              <Post
+                tweet={tweet}
+                userBookmarks={bookmarksSet}
+                userFollowing={followingSet}
+                key={uniqid()}
+              />
             );
           })}
         </div>

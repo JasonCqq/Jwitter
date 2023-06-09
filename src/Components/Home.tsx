@@ -37,7 +37,13 @@ function Home() {
   //Snapshot Reload
   const [newTweets, setNewTweets] = useState(0);
   const { user } = useGlobalContext();
+
+  //References
   const [bookmarksSet, setBookmarksSet] = useState<Set<string>>(
+    new Set<string>()
+  );
+
+  const [followingSet, setFollowingSet] = useState<Set<string>>(
     new Set<string>()
   );
 
@@ -54,9 +60,25 @@ function Home() {
     setBookmarksSet(userBookmarksSet as Set<string>);
   };
 
+  //Users Reference
+  const createFollowingSet = async () => {
+    const db = getFirestore(app);
+    const userRef = doc(db, "users", `${user?.uid}`, "follows", "following");
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      return;
+    }
+    const userFollowing = userSnap.data().following;
+    const userFollowingSet = new Set(userFollowing);
+    console.log(userFollowingSet);
+    setFollowingSet(userFollowingSet as Set<string>);
+  };
+
   useEffect(() => {
     createBookmarksSet();
+    createFollowingSet();
   }, []);
+
   //Adds a snapshot listener on tweets collection.
   useEffect(() => {
     const fetchTweets = async () => {
@@ -65,7 +87,7 @@ function Home() {
         collection(db, "allTweets"),
         (snapshot) => {
           snapshot.docChanges().forEach((change) => {
-            if (change.type === "added") {
+            if (change.type === "added" || change.type === "removed") {
               setNewTweets((prevNewTweets) => prevNewTweets + 1);
             }
           });
@@ -147,7 +169,12 @@ function Home() {
         <div id="tweets">
           {tweets.map((tweet) => {
             return (
-              <Post tweet={tweet} userBookmarks={bookmarksSet} key={uniqid()} />
+              <Post
+                tweet={tweet}
+                userBookmarks={bookmarksSet}
+                userFollowing={followingSet}
+                key={uniqid()}
+              />
             );
           })}
         </div>

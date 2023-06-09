@@ -57,6 +57,23 @@ const Profile = () => {
     new Set<string>()
   );
 
+  const [followingSet, setFollowingSet] = useState<Set<string>>(
+    new Set<string>()
+  );
+
+  //Users Reference
+  const createFollowingSet = async () => {
+    const db = getFirestore(app);
+    const userRef = doc(db, "users", `${user?.uid}`, "following");
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      return;
+    }
+    const userFollowing = userSnap.data().userArray;
+    const userFollowingSet = new Set(userFollowing);
+    setFollowingSet(userFollowingSet as Set<string>);
+  };
+
   useEffect(() => {
     if (userProfile) {
       displayData();
@@ -70,6 +87,7 @@ const Profile = () => {
     } else if (userId) {
       setUserProfile(userId);
     }
+    createFollowingSet();
   }, []);
 
   //Displays tweets in database
@@ -215,7 +233,12 @@ const Profile = () => {
 
         {tweets.map((tweet) => {
           return (
-            <Post tweet={tweet} userBookmarks={bookmarksSet} key={uniqid()} />
+            <Post
+              tweet={tweet}
+              userBookmarks={bookmarksSet}
+              userFollowing={followingSet}
+              key={uniqid()}
+            />
           );
         })}
       </div>

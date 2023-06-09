@@ -47,8 +47,13 @@
           margin-left: auto;
 
           p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             padding-bottom: 5px;
+            padding-right: 15px;
+            &:hover {
+              cursor: pointer;
+              color: #7856ff;
+            }
           }
         }
 

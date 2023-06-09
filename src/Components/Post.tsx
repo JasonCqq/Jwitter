@@ -12,6 +12,9 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  deleteDoc,
+  setDoc,
+  getDoc,
 } from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
 
@@ -35,12 +38,14 @@ interface Image {
 interface PostProps {
   tweet: Tweet;
   userBookmarks: Set<string>;
+  userFollowing: Set<string>;
 }
 
 const Post: React.FC<PostProps> = (props) => {
-  const { tweet, userBookmarks } = props;
+  const { tweet, userBookmarks, userFollowing } = props;
   const { user } = useGlobalContext();
   const [bookmarked, setBookmarked] = useState<boolean>();
+  const [followed, setFollowed] = useState<boolean>();
 
   //Set bookmark status
   useEffect(() => {
@@ -48,6 +53,12 @@ const Post: React.FC<PostProps> = (props) => {
       setBookmarked(true);
     } else if (!userBookmarks.has(tweet.docID)) {
       setBookmarked(false);
+    }
+
+    if (userFollowing.has(tweet.userID)) {
+      setFollowed(true);
+    } else if (!userFollowing.has(tweet.userID)) {
+      setFollowed(false);
     }
   }, []);
 
@@ -67,7 +78,6 @@ const Post: React.FC<PostProps> = (props) => {
       setBookmarked((prevBookmark) => !prevBookmark);
     }
   };
-
   //Renders images from tweet
   const mapImages = (image: Image[] = []) => {
     if (image.length === 0) {
@@ -81,6 +91,127 @@ const Post: React.FC<PostProps> = (props) => {
       </>
     );
   };
+
+  //Remove post from database
+  const deletePost = async () => {
+    const db = getFirestore(app);
+    await deleteDoc(doc(db, "allTweets", `${tweet.docID}`));
+    await deleteDoc(
+      doc(db, "users", `${user?.uid}`, "tweets", `${tweet.docID}`)
+    );
+  };
+
+  const followUser = async () => {
+    const db = getFirestore(app);
+    //Add to user's following
+    const userFollowing = doc(
+      db,
+      "users",
+      `${user?.uid}`,
+      "follows",
+      "following"
+    );
+    const userFollowingSnap = await getDoc(userFollowing);
+    if (!userFollowingSnap.exists()) {
+      await setDoc(doc(db, "users", `${user?.uid}`, "follows", "following"), {
+        following: arrayUnion(tweet.userID),
+      });
+    } else if (userFollowingSnap.exists()) {
+      await updateDoc(
+        doc(db, "users", `${user?.uid}`, "follows", "following"),
+        {
+          following: arrayUnion(tweet.userID),
+        }
+      );
+    }
+    //Add to tweeter's follower
+    const tweeterFollowing = doc(
+      db,
+      "users",
+      `${tweet.userID}`,
+      "follows",
+      "followers"
+    );
+    const tweeterFollowerSnap = await getDoc(tweeterFollowing);
+    if (!tweeterFollowerSnap.exists()) {
+      await setDoc(
+        doc(db, "users", `${tweet.userID}`, "follows", "followers"),
+        {
+          followers: arrayUnion(`${user?.uid}`),
+        }
+      );
+      setFollowed((prevFollowed) => !prevFollowed);
+    } else if (tweeterFollowerSnap.exists()) {
+      await updateDoc(
+        doc(db, "users", `${tweet.userID}`, "follows", "followers"),
+        {
+          followers: arrayUnion(`${user?.uid}`),
+        }
+      );
+      setFollowed((prevFollowed) => !prevFollowed);
+    }
+
+    //When you click unfollow
+    //Remove the user's ID from user's following, and then
+    //Remove user's ID in tweeter's document "followers"
+  };
+
+  const unfollowUser = async () => {
+    const db = getFirestore(app);
+    const userFollowing = doc(
+      db,
+      "users",
+      `${user?.uid}`,
+      "follows",
+      "following"
+    );
+    //Remove from user's following
+    const userFollowingSnap = await getDoc(userFollowing);
+    if (!userFollowingSnap.exists()) {
+      return;
+    }
+    await updateDoc(userFollowing, {
+      following: arrayRemove(`${tweet.userID}`),
+    });
+
+    //Remove from tweeter's followers
+    const tweeterFollowing = doc(
+      db,
+      "users",
+      `${tweet.userID}`,
+      "follows",
+      "followers"
+    );
+    const tweeterFollowerSnap = await getDoc(tweeterFollowing);
+    if (!tweeterFollowerSnap.exists()) {
+      return;
+    }
+    await updateDoc(tweeterFollowing, {
+      followers: arrayRemove(`${user?.uid}`),
+    });
+    setFollowed((prevFollowed) => !prevFollowed);
+  };
+
+  const moreOptions = () => {
+    if (user?.uid === tweet.userID) {
+      return (
+        <div>
+          <p onClick={() => deletePost()}>Delete Post</p>
+        </div>
+      );
+    } else if (user?.uid !== tweet.userID) {
+      return followed ? (
+        <div>
+          <p onClick={() => unfollowUser()}>Unfollow User</p>
+        </div>
+      ) : (
+        <div>
+          <p onClick={() => followUser()}>Follow User</p>
+        </div>
+      );
+    }
+  };
+
   //Options popup
   const [reveal, setReveal] = useState(false);
   return (
@@ -101,12 +232,7 @@ const Post: React.FC<PostProps> = (props) => {
             onClick={() => setReveal((prevReveal) => !prevReveal)}
             className="follow-button"
           />
-          {reveal ? (
-            <div>
-              <p>Follow</p>
-              <p>Delete</p>
-            </div>
-          ) : null}
+          {reveal ? moreOptions() : null}
         </div>
       </div>
 
