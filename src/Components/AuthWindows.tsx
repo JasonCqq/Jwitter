@@ -85,7 +85,6 @@ function useAuthentication() {
 }
 
 function CreateAccountWindow() {
-  const { user } = useGlobalContext();
   const { closeWindows, toggleSignIn } = useContext(LogInContext);
 
   const auth = getAuth();
@@ -94,7 +93,6 @@ function CreateAccountWindow() {
     toggleSignIn();
   };
 
-  const [handle, setHandle] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -107,10 +105,11 @@ function CreateAccountWindow() {
     }
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => closeWindows())
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
+      .then(() =>
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000)
+      );
   };
 
   return (
@@ -131,16 +130,6 @@ function CreateAccountWindow() {
           <div className="innerWindow">
             <h1>Create Your Account</h1>
             <form onSubmit={formSubmit}>
-              <input
-                className="handle-input"
-                name="handle"
-                type="name"
-                placeholder="Handle"
-                required
-                value={handle}
-                onChange={(e) => setHandle(e.target.value)}
-              ></input>
-
               <input
                 className="email-input"
                 name="email"

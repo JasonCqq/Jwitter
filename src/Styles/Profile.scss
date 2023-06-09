@@ -68,6 +68,13 @@
       display: flex;
       flex-direction: column;
 
+      .profile-follows {
+        &:hover {
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+
       p {
         font-size: 15px;
       }

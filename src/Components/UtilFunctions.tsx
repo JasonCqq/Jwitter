@@ -1,5 +1,4 @@
 import React from "react";
-import { useGlobalContext } from "./AuthContext";
 import {
   doc,
   getDoc,

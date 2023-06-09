@@ -26,6 +26,7 @@ import {
   unfollowUser,
 } from "./UtilFunctions";
 import { User } from "firebase/auth";
+import Loading from "./Loading";
 type UserData = {
   settings: {
     created: string;
@@ -54,10 +55,11 @@ const Profile = () => {
   const { user } = useGlobalContext();
   const db = getFirestore(app);
   const { userId } = useParams();
+  const [loading, setLoading] = useState(false);
 
   const [tweets, setTweets] = useState<Tweet[]>([]);
 
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, setUserData] = useState<UserData>();
   const [userProfile, setUserProfile] = useState<string>();
 
   //Follow status for button
@@ -127,26 +129,37 @@ const Profile = () => {
 
   useEffect(() => {
     if (userProfile) {
-      const showTweets = async () => {
-        const tweets = await displayData(db, user as User);
+      const fetchData = async () => {
+        setLoading(true);
+
+        const [tweets, bookmarks] = await Promise.all([
+          displayData(db, user as User),
+          createBookmarksSet(db, user as User),
+        ]);
+
         setTweets(tweets);
-        const bookmarks = await createBookmarksSet(db, user as User);
         setBookmarksSet(bookmarks);
+
+        await Promise.all([
+          getUserData(),
+          createProfileFollowingSet(),
+          createBrowsingUserFollowing(),
+        ]);
+        setLoading(false);
       };
-      showTweets();
-      getUserData();
-      createProfileFollowingSet();
-      createBrowsingUserFollowing();
+      fetchData();
     }
   }, [userProfile]);
 
   useEffect(() => {
     if (!userId) {
-      setUserProfile(user?.uid || "");
+      if (user && user.uid) {
+        setUserProfile(user?.uid);
+      }
     } else if (userId) {
       setUserProfile(userId);
     }
-  }, []);
+  }, [user]);
 
   //Get profile user's information
   const getUserData = async () => {
@@ -156,8 +169,6 @@ const Profile = () => {
 
     if (userSnap.exists()) {
       setUserData(userSnap.data() as UserData);
-    } else {
-      return;
     }
   };
   //Changes PFP photo, Edits user's photoURL in firebase
@@ -202,7 +213,9 @@ const Profile = () => {
     setUserBrowsingFollowing(userSnapDataSet);
   };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <CSSTransitionGroup
       transitionName="example"
       transitionAppear={true}
@@ -264,11 +277,11 @@ const Profile = () => {
 
             <div>
               <div>
-                <p>{followerSet.size}</p>
+                <p className="profile-follows">{followerSet.size}</p>
                 <span>Followers</span>
               </div>
               <div>
-                <p>{followingSet.size}</p>
+                <p className="profile-follows">{followingSet.size}</p>
                 <span>Following</span>
               </div>
             </div>
