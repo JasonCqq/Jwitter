@@ -4,7 +4,7 @@ import Home from "./Home";
 import Sidebar from "./Sidebar";
 import RightSidebar from "./RightSidebar";
 import SignupFooter from "./SignupFooter";
-import { CreateAccountWindow, SignInWindow } from "./sharedFunctions";
+import { CreateAccountWindow, SignInWindow } from "./AuthWindows";
 import Profile from "./Profile";
 import Settings from "./Settings";
 import Loading from "./Loading";

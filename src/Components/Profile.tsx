@@ -5,7 +5,6 @@ import { useGlobalContext } from "./AuthContext";
 import {
   getFirestore,
   app,
-  getDocs,
   collection,
   doc,
   getDoc,
@@ -15,13 +14,18 @@ import {
   uploadBytesResumable,
   getDownloadURL,
   setDoc,
-  arrayUnion,
-  arrayRemove,
 } from "../Firebase.js";
 import uniqid from "uniqid";
 import { useParams } from "react-router-dom";
 import Post from "./Post";
-
+import {
+  createFollowingSet,
+  displayData,
+  createBookmarksSet,
+  followUser,
+  unfollowUser,
+} from "./UtilFunctions";
+import { User } from "firebase/auth";
 type UserData = {
   settings: {
     created: string;
@@ -35,7 +39,7 @@ type UserData = {
 interface Tweet {
   comments: number;
   docID: string;
-  images: Image[];
+  images: [];
   likes: number;
   timestamp: string;
   tweetText: {
@@ -45,33 +49,36 @@ interface Tweet {
   userName: string;
   userProfileURL: string;
 }
-interface Image {
-  images: string;
-  storageUri: string;
-}
+
 const Profile = () => {
   const { user } = useGlobalContext();
+  const db = getFirestore(app);
   const { userId } = useParams();
 
   const [tweets, setTweets] = useState<Tweet[]>([]);
+
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userProfile, setUserProfile] = useState<string>();
-  const [bookmarksSet, setBookmarksSet] = useState<Set<string>>(
-    new Set<string>()
-  );
 
+  //Follow status for button
   const [followed, setFollowed] = useState<boolean>();
 
+  //Set References
   const [followingSet, setFollowingSet] = useState<Set<string>>(
     new Set<string>()
   );
   const [followerSet, setFollowerSet] = useState<Set<string>>(
     new Set<string>()
   );
+  const [bookmarksSet, setBookmarksSet] = useState<Set<string>>(
+    new Set<string>()
+  );
+  const [userBrowsingFollowing, setUserBrowsingFollowing] = useState<
+    Set<string>
+  >(new Set<string>());
 
-  //Users Reference
-  const createFollowingSet = async () => {
-    const db = getFirestore(app);
+  //Profile Following Reference Number
+  const createProfileFollowingSet = async () => {
     const usersCollectionRef = collection(db, "users");
 
     const userRef = doc(
@@ -108,7 +115,6 @@ const Profile = () => {
     const userFollower = userSnap2.data().followers;
     const userFollowerSet = new Set(userFollower);
     setFollowerSet(userFollowerSet as Set<string>);
-    console.log(userProfile, userRef2);
   };
 
   useEffect(() => {
@@ -121,9 +127,16 @@ const Profile = () => {
 
   useEffect(() => {
     if (userProfile) {
-      displayData();
+      const showTweets = async () => {
+        const tweets = await displayData(db, user as User);
+        setTweets(tweets);
+        const bookmarks = await createBookmarksSet(db, user as User);
+        setBookmarksSet(bookmarks);
+      };
+      showTweets();
       getUserData();
-      createFollowingSet();
+      createProfileFollowingSet();
+      createBrowsingUserFollowing();
     }
   }, [userProfile]);
 
@@ -135,47 +148,11 @@ const Profile = () => {
     }
   }, []);
 
-  //Displays tweets in database
-  const displayData = async () => {
-    const db = getFirestore(app);
-    const usersCollectionRef = collection(db, "users");
-    const userDocRef = doc(usersCollectionRef, userProfile);
-    const collectionSnapshot = await getDocs(collection(userDocRef, "tweets"));
-    const queries: any = [];
-
-    if (!collectionSnapshot.empty) {
-      collectionSnapshot.docs.forEach((doc) => {
-        queries.push(doc.data());
-      });
-
-      //Get user bookmarks
-      const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
-      const userSnap = await getDoc(userRef);
-      if (!userSnap.exists()) {
-        return;
-      }
-      const userBookmarks = userSnap.data().userArray;
-      const userBookmarksSet = new Set<string>(userBookmarks);
-      setBookmarksSet(userBookmarksSet);
-    }
-    //Sort Tweets by Time
-    const newQueries = queries.sort(
-      (a: { timestamp: string }, b: { timestamp: string }) => {
-        const timestampA = new Date(a.timestamp).getTime();
-        const timestampB = new Date(b.timestamp).getTime();
-        return timestampA - timestampB;
-      }
-    );
-
-    setTweets(newQueries);
-  };
-  //Get user's information
+  //Get profile user's information
   const getUserData = async () => {
-    const db = getFirestore(app);
     const dbRef = collection(db, "users");
     const userRef = doc(dbRef, userProfile);
     const userSnap = await getDoc(userRef);
-    console.log(userProfile);
 
     if (userSnap.exists()) {
       setUserData(userSnap.data() as UserData);
@@ -195,6 +172,7 @@ const Profile = () => {
       reader.onload = async function (e: ProgressEvent<FileReader>) {
         const result = e.target?.result;
         if (typeof result === "string") {
+          //Upload photo to firebase storage
           const filePath = `${user?.uid}/${file.name}`;
           const newImageRef = ref(getStorage(), filePath);
           await uploadBytesResumable(newImageRef, file);
@@ -203,7 +181,7 @@ const Profile = () => {
           const userRef = doc(db, "users", `${user?.uid}`);
           const userDoc = await getDoc(userRef);
           const userData = userDoc.data();
-
+          //Add photo to user
           const updatedUserData = {
             ...userData,
             settings: {
@@ -219,93 +197,9 @@ const Profile = () => {
     }
   };
 
-  const followUser = async () => {
-    const db = getFirestore(app);
-    const usersCollectionRef = collection(db, "users");
-    //Add to user's following
-    const userFollowing = doc(
-      db,
-      "users",
-      `${user?.uid}`,
-      "follows",
-      "following"
-    );
-    const userFollowingSnap = await getDoc(userFollowing);
-    if (!userFollowingSnap.exists()) {
-      await setDoc(
-        doc(usersCollectionRef, `${user?.uid}`, "follows", "following"),
-        {
-          following: arrayUnion(userProfile),
-        }
-      );
-    } else if (userFollowingSnap.exists()) {
-      await updateDoc(
-        doc(usersCollectionRef, `${user?.uid}`, "follows", "following"),
-        {
-          following: arrayUnion(userProfile),
-        }
-      );
-    }
-    //Add to tweeter's follower
-    const tweeterFollowing = doc(
-      usersCollectionRef,
-      userProfile,
-      "follows",
-      "followers"
-    );
-    const tweeterFollowerSnap = await getDoc(tweeterFollowing);
-    if (!tweeterFollowerSnap.exists()) {
-      await setDoc(
-        doc(usersCollectionRef, userProfile, "follows", "followers"),
-        {
-          followers: arrayUnion(`${user?.uid}`),
-        }
-      );
-      setFollowed(true);
-    } else if (tweeterFollowerSnap.exists()) {
-      await updateDoc(
-        doc(usersCollectionRef, userProfile, "follows", "followers"),
-        {
-          followers: arrayUnion(`${user?.uid}`),
-        }
-      );
-      setFollowed(true);
-    }
-  };
-
-  const unfollowUser = async () => {
-    const db = getFirestore(app);
-    const usersCollectionRef = collection(db, "users");
-    const userFollowing = doc(
-      usersCollectionRef,
-      `${user?.uid}`,
-      "follows",
-      "following"
-    );
-    //Remove from user's following
-    const userFollowingSnap = await getDoc(userFollowing);
-    if (!userFollowingSnap.exists()) {
-      return;
-    }
-    await updateDoc(userFollowing, {
-      following: arrayRemove(userProfile),
-    });
-
-    //Remove from tweeter's followers
-    const tweeterFollowing = doc(
-      usersCollectionRef,
-      userProfile,
-      "follows",
-      "followers"
-    );
-    const tweeterFollowerSnap = await getDoc(tweeterFollowing);
-    if (!tweeterFollowerSnap.exists()) {
-      return;
-    }
-    await updateDoc(tweeterFollowing, {
-      followers: arrayRemove(`${user?.uid}`),
-    });
-    setFollowed(false);
+  const createBrowsingUserFollowing = async () => {
+    const userSnapDataSet = await createFollowingSet(db, user as User);
+    setUserBrowsingFollowing(userSnapDataSet);
   };
 
   return (
@@ -342,11 +236,23 @@ const Profile = () => {
                 <label htmlFor="pfpFile">Edit Photo</label>
               </div>
             ) : followed ? (
-              <button className="button" onClick={() => unfollowUser()}>
+              <button
+                className="button"
+                onClick={async () => {
+                  await unfollowUser(db, user as User, userProfile as string);
+                  setFollowed(false);
+                }}
+              >
                 Unfollow
               </button>
             ) : (
-              <button className="button" onClick={() => followUser()}>
+              <button
+                className="button"
+                onClick={async () => {
+                  await followUser(db, user as User, userProfile as string);
+                  setFollowed(true);
+                }}
+              >
                 Follow
               </button>
             )}
@@ -376,7 +282,7 @@ const Profile = () => {
             <Post
               tweet={tweet}
               userBookmarks={bookmarksSet}
-              userFollowing={followingSet}
+              userFollowing={userBrowsingFollowing}
               key={uniqid()}
             />
           );

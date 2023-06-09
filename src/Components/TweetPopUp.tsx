@@ -7,7 +7,6 @@ import { AiOutlineFileGif } from "react-icons/ai";
 import { BsEmojiSmile } from "react-icons/bs";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { SlCalender } from "react-icons/sl";
-
 import { TweetWindowContext } from "./Sidebar";
 import {
   collection,
@@ -37,17 +36,15 @@ type UserData = {
 };
 
 const TweetPopUp = () => {
+  const { user } = useGlobalContext();
   const [userData, setUserData] = useState<UserData | null>(null);
-  // User profile picture
-  // Image option
-  // Textfield with character limit
-  // Tweet
+
   const { tweetWindow, openTweetWindow } = useContext(TweetWindowContext);
+
   const [images, setImages] = useState<File[]>([]);
 
   const [loading, setLoading] = useState(false);
 
-  const { user } = useGlobalContext();
   const imageCount = useRef(0);
 
   const getUserData = async () => {

@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Home.scss";
 import { CSSTransitionGroup } from "react-transition-group";
-import {
-  collection,
-  doc,
-  getDocs,
-  app,
-  getFirestore,
-  onSnapshot,
-  getDoc,
-} from "../Firebase.js";
+import { collection, app, getFirestore, onSnapshot } from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
 import uniqid from "uniqid";
 import Post from "./Post";
+import {
+  createFollowingSet,
+  createBookmarksSet,
+  displayData,
+} from "./UtilFunctions";
+import { User } from "firebase/auth";
 
 interface Tweet {
   comments: number;
   docID: string;
-  images: Image[];
+  images: [];
   likes: number;
   timestamp: string;
   tweetText: {
@@ -27,62 +25,43 @@ interface Tweet {
   userName: string;
   userProfileURL: string;
 }
-interface Image {
-  images: string;
-  storageUri: string;
-}
 
-function Home() {
-  const [tweets, setTweets] = useState<Tweet[]>([]);
-  //Snapshot Reload
-  const [newTweets, setNewTweets] = useState(0);
+const db = getFirestore(app);
+
+const Home = () => {
   const { user } = useGlobalContext();
 
-  //References
+  const [tweets, setTweets] = useState<Tweet[]>([]);
+  const [newTweets, setNewTweets] = useState(0);
+
+  //Set References
   const [bookmarksSet, setBookmarksSet] = useState<Set<string>>(
     new Set<string>()
   );
-
   const [followingSet, setFollowingSet] = useState<Set<string>>(
     new Set<string>()
   );
 
-  //Bookmarks Reference
-  const createBookmarksSet = async () => {
-    const db = getFirestore(app);
-    const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
-      return;
-    }
-    const userBookmarks = userSnap.data().userArray;
-    const userBookmarksSet = new Set(userBookmarks);
-    setBookmarksSet(userBookmarksSet as Set<string>);
-  };
-
-  //Users Reference
-  const createFollowingSet = async () => {
-    const db = getFirestore(app);
-    const userRef = doc(db, "users", `${user?.uid}`, "follows", "following");
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
-      return;
-    }
-    const userFollowing = userSnap.data().following;
-    const userFollowingSet = new Set(userFollowing);
-    console.log(userFollowingSet);
-    setFollowingSet(userFollowingSet as Set<string>);
-  };
-
+  //Add Bookmarks and Following Set References
   useEffect(() => {
-    createBookmarksSet();
-    createFollowingSet();
-  }, []);
+    if (user) {
+      const createBookmarks = async () => {
+        const bookmarksSet = await createBookmarksSet(db, user as User);
+        setBookmarksSet(bookmarksSet);
+      };
+      const createFollowing = async () => {
+        const followSet = await createFollowingSet(db, user as User);
+        setFollowingSet(followSet);
+      };
+
+      createBookmarks();
+      createFollowing();
+    }
+  }, [user]);
 
   //Adds a snapshot listener on tweets collection.
   useEffect(() => {
     const fetchTweets = async () => {
-      const db = getFirestore(app);
       const unsubscribe = onSnapshot(
         collection(db, "allTweets"),
         (snapshot) => {
@@ -99,58 +78,15 @@ function Home() {
     };
     fetchTweets();
   }, []);
+
+  //Refresh Tweets
   useEffect(() => {
-    displayData();
+    const createTweets = async () => {
+      const tweets = await displayData(db, user as User);
+      setTweets(tweets);
+    };
+    createTweets();
   }, [newTweets]);
-  //Add tweets from database
-  const displayData = async () => {
-    try {
-      setTweets([]);
-      const db = getFirestore(app);
-      const collectionSnapshot = await getDocs(collection(db, "allTweets"));
-      const queries: any = [];
-
-      //Display without bookmark function if not logged in
-      if (!user) {
-        collectionSnapshot.forEach((doc) => {
-          const data = {
-            key: uniqid(),
-            ...doc.data(),
-          };
-          queries.push(data);
-        });
-        //Sort tweets by time
-        const newQueries = queries.sort(
-          (a: { timestamp: string }, b: { timestamp: string }) => {
-            const timestampA = new Date(a.timestamp).getTime();
-            const timestampB = new Date(b.timestamp).getTime();
-            return timestampB - timestampA;
-          }
-        );
-        setTweets(newQueries);
-        return;
-      }
-
-      collectionSnapshot.forEach((doc) => {
-        const data = {
-          key: uniqid(),
-          ...doc.data(),
-        };
-        queries.push(data);
-      });
-      //Sort tweets by time
-      const newQueries = queries.sort(
-        (a: { timestamp: string }, b: { timestamp: string }) => {
-          const timestampA = new Date(a.timestamp).getTime();
-          const timestampB = new Date(b.timestamp).getTime();
-          return timestampB - timestampA;
-        }
-      );
-      setTweets(newQueries);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <CSSTransitionGroup
@@ -181,6 +117,6 @@ function Home() {
       </div>
     </CSSTransitionGroup>
   );
-}
+};
 
 export default Home;

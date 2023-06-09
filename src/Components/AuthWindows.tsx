@@ -13,7 +13,7 @@ import {
 } from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
 import React, { useState } from "react";
-import "../Styles/sharedFunctions.scss";
+import "../Styles/AuthWindows.scss";
 import { RxCross2 } from "react-icons/rx";
 import { LogInContext } from "./Routeswitch";
 import { CSSTransitionGroup } from "react-transition-group";

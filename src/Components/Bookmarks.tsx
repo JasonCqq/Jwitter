@@ -10,14 +10,16 @@ import {
   collection,
   getDoc,
 } from "../Firebase";
+import { User } from "firebase/auth";
 import { CSSTransitionGroup } from "react-transition-group";
 import uniqid from "uniqid";
 import Post from "./Post";
+import { createFollowingSet } from "./UtilFunctions";
 
 interface Tweet {
   comments: number;
   docID: string;
-  images: Image[];
+  images: [];
   likes: number;
   timestamp: string;
   tweetText: {
@@ -28,14 +30,13 @@ interface Tweet {
   userProfileURL: string;
 }
 
-interface Image {
-  images: string;
-  storageUri: string;
-}
-
 const Bookmarks = () => {
   const { user } = useGlobalContext();
+  const db = getFirestore(app);
+
   const [tweets, setTweets] = useState<Tweet[]>([]);
+
+  //Set References
   const [bookmarksSet, setBookmarksSet] = useState<Set<string>>(
     new Set<string>()
   );
@@ -45,11 +46,17 @@ const Bookmarks = () => {
 
   useEffect(() => {
     retrieveBookmarks();
-    createFollowingSet();
+
+    const setFollowings = async () => {
+      const followings = await createFollowingSet(db, user as User);
+      setFollowingSet(followings);
+    };
+
+    setFollowings();
   }, []);
+  //Users Reference
 
   const retrieveBookmarks = async () => {
-    const db = getFirestore(app);
     const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
     const userSnap = await getDoc(userRef);
     if (!userSnap.exists()) {
@@ -80,18 +87,6 @@ const Bookmarks = () => {
     );
 
     setTweets(newTweets);
-  };
-  //Users Reference
-  const createFollowingSet = async () => {
-    const db = getFirestore(app);
-    const userRef = doc(db, "users", `${user?.uid}`, "following");
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
-      return;
-    }
-    const userFollowing = userSnap.data().userArray;
-    const userFollowingSet = new Set(userFollowing);
-    setFollowingSet(userFollowingSet as Set<string>);
   };
 
   return (

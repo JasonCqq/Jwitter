@@ -13,7 +13,7 @@ import { getFirestore, app, doc, getDoc } from "../Firebase.js";
 import { CgProfile } from "react-icons/cg";
 import { MdLogout } from "react-icons/md";
 import { BsBookmark } from "react-icons/bs";
-//////////////////////////////////////////////////
+
 export const TweetWindowContext = createContext({
   tweetWindow: true,
   openTweetWindow: () => {},

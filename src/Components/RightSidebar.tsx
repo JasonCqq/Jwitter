@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import "../Styles/RightSidebar.scss";
 import { FcGoogle } from "react-icons/fc";
 import { FiEye } from "react-icons/fi";
-import { useAuthentication } from "./sharedFunctions";
+import { useAuthentication } from "./AuthWindows";
 import { LogInContext } from "./Routeswitch";
 import { useGlobalContext } from "./AuthContext";
 import { CSSTransitionGroup } from "react-transition-group";

@@ -13,15 +13,16 @@ import {
   arrayUnion,
   arrayRemove,
   deleteDoc,
-  setDoc,
-  getDoc,
 } from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
+import "../Styles/Post.scss";
+import { mapImages, followUser, unfollowUser } from "./UtilFunctions";
+import { User } from "firebase/auth";
 
 interface Tweet {
   comments: number;
   docID: string;
-  images: Image[];
+  images: [];
   likes: number;
   timestamp: string;
   tweetText: {
@@ -31,10 +32,7 @@ interface Tweet {
   userName: string;
   userProfileURL: string;
 }
-interface Image {
-  images: string;
-  storageUri: string;
-}
+
 interface PostProps {
   tweet: Tweet;
   userBookmarks: Set<string>;
@@ -42,6 +40,7 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = (props) => {
+  const db = getFirestore(app);
   const { tweet, userBookmarks, userFollowing } = props;
   const { user } = useGlobalContext();
   const [bookmarked, setBookmarked] = useState<boolean>();
@@ -65,7 +64,6 @@ const Post: React.FC<PostProps> = (props) => {
   //Add/Delete bookmark
   const bookmarkTweet = async (tweetID: string) => {
     //Add/Delete bookmark ID
-    const db = getFirestore(app);
     if (userBookmarks.has(tweetID)) {
       await updateDoc(doc(db, "users", `${user?.uid}`, "bookmarks", "tweets"), {
         userArray: arrayRemove(tweetID),
@@ -78,118 +76,13 @@ const Post: React.FC<PostProps> = (props) => {
       setBookmarked((prevBookmark) => !prevBookmark);
     }
   };
-  //Renders images from tweet
-  const mapImages = (image: Image[] = []) => {
-    if (image.length === 0) {
-      return;
-    }
-    return (
-      <>
-        {image.map((img) => (
-          <img key={img.storageUri} src={img.images} />
-        ))}
-      </>
-    );
-  };
 
   //Remove post from database
   const deletePost = async () => {
-    const db = getFirestore(app);
     await deleteDoc(doc(db, "allTweets", `${tweet.docID}`));
     await deleteDoc(
       doc(db, "users", `${user?.uid}`, "tweets", `${tweet.docID}`)
     );
-  };
-
-  const followUser = async () => {
-    const db = getFirestore(app);
-    //Add to user's following
-    const userFollowing = doc(
-      db,
-      "users",
-      `${user?.uid}`,
-      "follows",
-      "following"
-    );
-    const userFollowingSnap = await getDoc(userFollowing);
-    if (!userFollowingSnap.exists()) {
-      await setDoc(doc(db, "users", `${user?.uid}`, "follows", "following"), {
-        following: arrayUnion(tweet.userID),
-      });
-    } else if (userFollowingSnap.exists()) {
-      await updateDoc(
-        doc(db, "users", `${user?.uid}`, "follows", "following"),
-        {
-          following: arrayUnion(tweet.userID),
-        }
-      );
-    }
-    //Add to tweeter's follower
-    const tweeterFollowing = doc(
-      db,
-      "users",
-      `${tweet.userID}`,
-      "follows",
-      "followers"
-    );
-    const tweeterFollowerSnap = await getDoc(tweeterFollowing);
-    if (!tweeterFollowerSnap.exists()) {
-      await setDoc(
-        doc(db, "users", `${tweet.userID}`, "follows", "followers"),
-        {
-          followers: arrayUnion(`${user?.uid}`),
-        }
-      );
-      setFollowed((prevFollowed) => !prevFollowed);
-    } else if (tweeterFollowerSnap.exists()) {
-      await updateDoc(
-        doc(db, "users", `${tweet.userID}`, "follows", "followers"),
-        {
-          followers: arrayUnion(`${user?.uid}`),
-        }
-      );
-      setFollowed((prevFollowed) => !prevFollowed);
-    }
-
-    //When you click unfollow
-    //Remove the user's ID from user's following, and then
-    //Remove user's ID in tweeter's document "followers"
-  };
-
-  const unfollowUser = async () => {
-    const db = getFirestore(app);
-    const userFollowing = doc(
-      db,
-      "users",
-      `${user?.uid}`,
-      "follows",
-      "following"
-    );
-    //Remove from user's following
-    const userFollowingSnap = await getDoc(userFollowing);
-    if (!userFollowingSnap.exists()) {
-      return;
-    }
-    await updateDoc(userFollowing, {
-      following: arrayRemove(`${tweet.userID}`),
-    });
-
-    //Remove from tweeter's followers
-    const tweeterFollowing = doc(
-      db,
-      "users",
-      `${tweet.userID}`,
-      "follows",
-      "followers"
-    );
-    const tweeterFollowerSnap = await getDoc(tweeterFollowing);
-    if (!tweeterFollowerSnap.exists()) {
-      return;
-    }
-    await updateDoc(tweeterFollowing, {
-      followers: arrayRemove(`${user?.uid}`),
-    });
-    setFollowed((prevFollowed) => !prevFollowed);
   };
 
   const moreOptions = () => {
@@ -202,11 +95,25 @@ const Post: React.FC<PostProps> = (props) => {
     } else if (user?.uid !== tweet.userID) {
       return followed ? (
         <div>
-          <p onClick={() => unfollowUser()}>Unfollow User</p>
+          <p
+            onClick={() => {
+              unfollowUser(db, user as User, tweet.userID as string);
+              setFollowed(false);
+            }}
+          >
+            Unfollow User
+          </p>
         </div>
       ) : (
         <div>
-          <p onClick={() => followUser()}>Follow User</p>
+          <p
+            onClick={() => {
+              followUser(db, user as User, tweet.userID as string);
+              setFollowed(true);
+            }}
+          >
+            Follow User
+          </p>
         </div>
       );
     }
@@ -214,6 +121,7 @@ const Post: React.FC<PostProps> = (props) => {
 
   //Options popup
   const [reveal, setReveal] = useState(false);
+
   return (
     <div className="tweet" key={tweet.docID}>
       <div className="tweet-handle">
