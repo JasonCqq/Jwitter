@@ -11,10 +11,10 @@ import {
   getDoc,
 } from "../Firebase";
 import { User } from "firebase/auth";
-import { CSSTransitionGroup } from "react-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import uniqid from "uniqid";
 import Post from "./Post";
-import { createFollowingSet } from "./UtilFunctions";
+import { createFollowingSet, createLikesSet } from "./UtilFunctions";
 
 interface Tweet {
   comments: number;
@@ -43,6 +43,7 @@ const Bookmarks = () => {
   const [followingSet, setFollowingSet] = useState<Set<string>>(
     new Set<string>()
   );
+  const [likesSet, setLikesSet] = useState<Set<string>>(new Set<string>());
 
   useEffect(() => {
     retrieveBookmarks();
@@ -52,6 +53,12 @@ const Bookmarks = () => {
       setFollowingSet(followings);
     };
 
+    const createLikes = async () => {
+      const likesSet = await createLikesSet(db, user as User);
+      setLikesSet(likesSet);
+    };
+
+    createLikes();
     setFollowings();
   }, []);
   //Users Reference
@@ -90,33 +97,30 @@ const Bookmarks = () => {
   };
 
   return (
-    <CSSTransitionGroup
-      transitionName="example"
-      transitionAppear={true}
-      transitionAppearTimeout={1000}
-      transitionEnter={true}
-      transitionLeave={true}
-    >
-      <div className="main-bookmarks">
-        <div className="info-bar">
-          {" "}
-          <h1>Your Bookmarks</h1>
-        </div>
+    <TransitionGroup>
+      <CSSTransition classNames="example" appear={true} timeout={1000}>
+        <div className="main-bookmarks">
+          <div className="info-bar">
+            {" "}
+            <h1>Your Bookmarks</h1>
+          </div>
 
-        <div className="bookmarked-tweets">
-          {tweets.map((tweet) => {
-            return (
-              <Post
-                tweet={tweet}
-                userBookmarks={bookmarksSet}
-                userFollowing={followingSet}
-                key={uniqid()}
-              />
-            );
-          })}
+          <div className="bookmarked-tweets">
+            {tweets.map((tweet) => {
+              return (
+                <Post
+                  tweet={tweet}
+                  userBookmarks={bookmarksSet}
+                  userFollowing={followingSet}
+                  userLikes={likesSet}
+                  key={uniqid()}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </CSSTransitionGroup>
+      </CSSTransition>
+    </TransitionGroup>
   );
 };
 

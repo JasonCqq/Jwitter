@@ -265,6 +265,7 @@ table {
         .signout-icon {
           display: none;
         }
+
         .signOutButton {
           font-size: 10px;
         }
@@ -278,6 +279,16 @@ table {
       .createAccount-window {
         width: 80vw;
         height: 75vh;
+      }
+    }
+
+    .follow-container {
+      .user {
+        width: 50%;
+
+        button {
+          width: 10vw;
+        }
       }
     }
 

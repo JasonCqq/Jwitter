@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../Styles/Profile.scss";
-import { CSSTransitionGroup } from "react-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { useGlobalContext } from "./AuthContext";
 import {
   getFirestore,
@@ -24,6 +24,7 @@ import {
   createBookmarksSet,
   followUser,
   unfollowUser,
+  createLikesSet,
 } from "./UtilFunctions";
 import { User } from "firebase/auth";
 import Loading from "./Loading";
@@ -75,6 +76,7 @@ const Profile = () => {
   const [bookmarksSet, setBookmarksSet] = useState<Set<string>>(
     new Set<string>()
   );
+  const [likesSet, setLikesSet] = useState<Set<string>>(new Set<string>());
   const [userBrowsingFollowing, setUserBrowsingFollowing] = useState<
     Set<string>
   >(new Set<string>());
@@ -141,13 +143,15 @@ const Profile = () => {
       const fetchData = async () => {
         setLoading(true);
 
-        const [tweets, bookmarks] = await Promise.all([
+        const [tweets, bookmarks, likes] = await Promise.all([
           displayData(db, user as User),
           createBookmarksSet(db, user as User),
+          createLikesSet(db, user as User),
         ]);
 
         setTweets(tweets);
         setBookmarksSet(bookmarks);
+        setLikesSet(likes);
 
         await Promise.all([
           getUserData(),
@@ -225,110 +229,107 @@ const Profile = () => {
   return loading ? (
     <Loading />
   ) : (
-    <CSSTransitionGroup
-      transitionName="example"
-      transitionAppear={true}
-      transitionAppearTimeout={1000}
-      transitionEnter={true}
-      transitionLeave={true}
-    >
-      <div className="main-profile">
-        <div className="info-bar">
-          {" "}
-          <h1>Profile</h1>
-        </div>
-
-        <div className="profile-banner">
-          <div className="profile-follow">
-            <img
-              src={
-                userData?.settings.photoURL ||
-                "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
-              }
-            ></img>
-            {userProfile === user?.uid ? (
-              <div className="editPhoto button">
-                <input
-                  id="pfpFile"
-                  type="file"
-                  accept="image/*"
-                  title=" "
-                  onChange={editPhoto}
-                ></input>
-                <label htmlFor="pfpFile">Edit Photo</label>
-              </div>
-            ) : followed ? (
-              <button
-                className="button"
-                onClick={async () => {
-                  await unfollowUser(db, user as User, userProfile as string);
-                  setFollowed(false);
-                }}
-              >
-                Unfollow
-              </button>
-            ) : (
-              <button
-                className="button"
-                onClick={async () => {
-                  await followUser(db, user as User, userProfile as string);
-                  setFollowed(true);
-                }}
-              >
-                Follow
-              </button>
-            )}
+    <TransitionGroup>
+      <CSSTransition classNames="example" appear={true} timeout={1000}>
+        <div className="main-profile">
+          <div className="info-bar">
+            {" "}
+            <h1>Profile</h1>
           </div>
 
-          <div className="profile-description">
-            <h1>{userData?.settings.username}</h1>
-            <p>A Jwitter User (Joined {userData?.settings.created})</p>
-
-            <div className="profile-description-div">
-              <div>
-                <p
-                  onClick={() => handleClick("followers")}
-                  className="profile-follows"
+          <div className="profile-banner">
+            <div className="profile-follow">
+              <img
+                src={
+                  userData?.settings.photoURL ||
+                  "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
+                }
+              ></img>
+              {userProfile === user?.uid ? (
+                <div className="editPhoto button">
+                  <input
+                    id="pfpFile"
+                    type="file"
+                    accept="image/*"
+                    title=" "
+                    onChange={editPhoto}
+                  ></input>
+                  <label htmlFor="pfpFile">Edit Photo</label>
+                </div>
+              ) : followed ? (
+                <button
+                  className="button"
+                  onClick={async () => {
+                    await unfollowUser(db, user as User, userProfile as string);
+                    setFollowed(false);
+                  }}
                 >
-                  {followerSet.size}
-                </p>
-                <span>Followers</span>
-              </div>
-              <div>
-                <p
-                  onClick={() => handleClick("following")}
-                  className="profile-follows"
+                  Unfollow
+                </button>
+              ) : (
+                <button
+                  className="button"
+                  onClick={async () => {
+                    await followUser(db, user as User, userProfile as string);
+                    setFollowed(true);
+                  }}
                 >
-                  {followingSet.size}
-                </p>
-                <span>Following</span>
-              </div>
+                  Follow
+                </button>
+              )}
             </div>
 
-            {buttonClicked && (
-              <FollowPop
-                tab={buttonClicked || "N/A"}
-                profileID={userProfile || ""}
-                close={closeWindow}
-              />
-            )}
+            <div className="profile-description">
+              <h1>{userData?.settings.username}</h1>
+              <p>A Jwitter User (Joined {userData?.settings.created})</p>
+
+              <div className="profile-description-div">
+                <div>
+                  <p
+                    onClick={() => handleClick("followers")}
+                    className="profile-follows"
+                  >
+                    {followerSet.size}
+                  </p>
+                  <span>Followers</span>
+                </div>
+                <div>
+                  <p
+                    onClick={() => handleClick("following")}
+                    className="profile-follows"
+                  >
+                    {followingSet.size}
+                  </p>
+                  <span>Following</span>
+                </div>
+              </div>
+
+              {buttonClicked && (
+                <FollowPop
+                  tab={buttonClicked || "N/A"}
+                  profileID={userProfile || ""}
+                  close={closeWindow}
+                />
+              )}
+            </div>
+
+            <h3>Tweets</h3>
           </div>
 
-          <h3>Tweets</h3>
+          {tweets.map((tweet) => {
+            return (
+              <Post
+                tweet={tweet}
+                userBookmarks={bookmarksSet}
+                userFollowing={userBrowsingFollowing}
+                userLikes={likesSet}
+                key={uniqid()}
+              />
+            );
+          })}
         </div>
-
-        {tweets.map((tweet) => {
-          return (
-            <Post
-              tweet={tweet}
-              userBookmarks={bookmarksSet}
-              userFollowing={userBrowsingFollowing}
-              key={uniqid()}
-            />
-          );
-        })}
-      </div>
-    </CSSTransitionGroup>
+      </CSSTransition>
+    </TransitionGroup>
   );
 };
 

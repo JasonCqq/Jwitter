@@ -11,6 +11,7 @@ import {
 } from "../Firebase.js";
 import { User } from "firebase/auth";
 import uniqid from "uniqid";
+import { increment } from "firebase/firestore";
 
 //Returns images from tweet
 interface Image {
@@ -30,7 +31,7 @@ export const mapImages = (image: Image[] = []) => {
   );
 };
 
-//Creates following Set
+//Creates Following Set Reference
 export const createFollowingSet = async (db: any, user: User) => {
   const userRef = doc(db, "users", `${user?.uid}`, "follows", "following");
   const userSnap = await getDoc(userRef);
@@ -41,6 +42,7 @@ export const createFollowingSet = async (db: any, user: User) => {
   return new Set<string>(userFollowing);
 };
 
+//Creates Bookmarks Set Reference
 export const createBookmarksSet = async (db: any, user: User) => {
   const userRef = doc(db, "users", `${user?.uid}`, "bookmarks", "tweets");
   const userSnap = await getDoc(userRef);
@@ -51,6 +53,7 @@ export const createBookmarksSet = async (db: any, user: User) => {
   return new Set<string>(userBookmarks);
 };
 
+//Display Tweets
 export const displayData = async (db: any, user: User) => {
   try {
     const collectionSnapshot = await getDocs(collection(db, "allTweets"));
@@ -97,7 +100,7 @@ export const displayData = async (db: any, user: User) => {
   }
 };
 
-//otherUser as in other user's ID
+//otherUser = other user's ID
 export const followUser = async (db: any, user: User, otherUser: string) => {
   //Add to user's following
   const usersCollectionRef = collection(db, "users");
@@ -176,4 +179,101 @@ export const unfollowUser = async (db: any, user: User, otherUser: string) => {
   await updateDoc(tweeterFollowing, {
     followers: arrayRemove(`${user?.uid}`),
   });
+};
+
+export const createLikesSet = async (db: any, user: User) => {
+  const userRef = collection(db, "users");
+  const likesRef = doc(userRef, `${user?.uid}`, "likes", "tweets");
+  const userSnap = await getDoc(likesRef);
+
+  if (!userSnap.exists()) {
+    await setDoc(likesRef, {
+      likes: [],
+    });
+
+    return new Set<string>();
+  }
+
+  const userSnapSet = userSnap.data().likes;
+  return new Set<string>(userSnapSet);
+};
+
+export const likePost = async (
+  db: any,
+  user: User,
+  postID: string,
+  otherUserID: string
+) => {
+  //Add to user's likes
+  const usersCollectionRef = collection(db, "users");
+  const userLikes = doc(usersCollectionRef, `${user?.uid}`, "likes", "tweets");
+  const userLikesSnap = await getDoc(userLikes);
+  if (!userLikesSnap.exists()) {
+    await setDoc(doc(usersCollectionRef, `${user?.uid}`, "likes", "tweets"), {
+      likes: arrayUnion(postID),
+    });
+  } else if (userLikesSnap.exists()) {
+    await updateDoc(
+      doc(usersCollectionRef, `${user?.uid}`, "likes", "tweets"),
+      {
+        likes: arrayUnion(postID),
+      }
+    );
+  }
+
+  //Update allTweet likes
+  const tweetLikes = collection(db, "allTweets");
+  const tweetLikesSnap = await getDoc(doc(tweetLikes, postID));
+  if (!tweetLikesSnap.exists()) {
+    return;
+  }
+  const tweetLikesRef = tweetLikesSnap.ref;
+  await updateDoc(tweetLikesRef, { likes: increment(1) });
+
+  //Add to other user's tweet likes
+  const usersCollectionRef2 = collection(db, "users");
+  const userLikes2 = doc(usersCollectionRef2, otherUserID, "tweets", postID);
+  const userLikesSnap2 = await getDoc(userLikes2);
+  if (!userLikesSnap2.exists()) {
+    return;
+  }
+  const userLikes2Ref = userLikesSnap2.ref;
+  await updateDoc(userLikes2Ref, { likes: increment(1) });
+};
+
+export const unlikePost = async (
+  db: any,
+  user: User,
+  postID: string,
+  otherUserID: string
+) => {
+  //Remove from user's likes
+  const usersCollectionRef = collection(db, "users");
+  const userLikes = doc(usersCollectionRef, `${user?.uid}`, "likes", "tweets");
+  const userLikesSnap = await getDoc(userLikes);
+  if (!userLikesSnap.exists()) {
+    return;
+  }
+  await updateDoc(doc(usersCollectionRef, `${user?.uid}`, "likes", "tweets"), {
+    likes: arrayRemove(postID),
+  });
+
+  //Update allTweet likes
+  const tweetLikes = collection(db, "allTweets");
+  const tweetLikesSnap = await getDoc(doc(tweetLikes, postID));
+  if (!tweetLikesSnap.exists()) {
+    return;
+  }
+  const tweetLikesRef = tweetLikesSnap.ref;
+  await updateDoc(tweetLikesRef, { likes: increment(-1) });
+
+  //Remove from other user's tweet likes
+  const usersCollectionRef2 = collection(db, "users");
+  const userLikes2 = doc(usersCollectionRef2, otherUserID, "tweets", postID);
+  const userLikesSnap2 = await getDoc(userLikes2);
+  if (!userLikesSnap2.exists()) {
+    return;
+  }
+  const userLikes2Ref = userLikesSnap2.ref;
+  await updateDoc(userLikes2Ref, { likes: increment(-1) });
 };

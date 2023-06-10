@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Home.scss";
-import { CSSTransitionGroup } from "react-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { collection, app, getFirestore, onSnapshot } from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
 import uniqid from "uniqid";
@@ -9,6 +9,7 @@ import {
   createFollowingSet,
   createBookmarksSet,
   displayData,
+  createLikesSet,
 } from "./UtilFunctions";
 import { User } from "firebase/auth";
 
@@ -41,6 +42,7 @@ const Home = () => {
   const [followingSet, setFollowingSet] = useState<Set<string>>(
     new Set<string>()
   );
+  const [likesSet, setLikesSet] = useState<Set<string>>(new Set<string>());
 
   //Add Bookmarks and Following Set References
   useEffect(() => {
@@ -53,9 +55,14 @@ const Home = () => {
         const followSet = await createFollowingSet(db, user as User);
         setFollowingSet(followSet);
       };
+      const createLikes = async () => {
+        const likesSet = await createLikesSet(db, user as User);
+        setLikesSet(likesSet);
+      };
 
       createBookmarks();
       createFollowing();
+      createLikes();
     }
   }, [user]);
 
@@ -66,7 +73,11 @@ const Home = () => {
         collection(db, "allTweets"),
         (snapshot) => {
           snapshot.docChanges().forEach((change) => {
-            if (change.type === "added" || change.type === "removed") {
+            if (
+              change.type === "added" ||
+              change.type === "removed" ||
+              change.type === "modified"
+            ) {
               setNewTweets((prevNewTweets) => prevNewTweets + 1);
             }
           });
@@ -85,37 +96,40 @@ const Home = () => {
       const tweets = await displayData(db, user as User);
       setTweets(tweets);
     };
+    const createLikes = async () => {
+      const likesSet = await createLikesSet(db, user as User);
+      setLikesSet(likesSet);
+    };
+
+    createLikes();
     createTweets();
   }, [newTweets]);
 
   return (
-    <CSSTransitionGroup
-      transitionName="example"
-      transitionAppear={true}
-      transitionAppearTimeout={1000}
-      transitionEnter={true}
-      transitionLeave={true}
-    >
-      <div className="main-home">
-        <div className="info-bar">
-          {" "}
-          <h1>Home</h1>
-        </div>
+    <TransitionGroup>
+      <CSSTransition classNames="example" appear={true} timeout={1000}>
+        <div className="main-home">
+          <div className="info-bar">
+            {" "}
+            <h1>Home</h1>
+          </div>
 
-        <div id="tweets">
-          {tweets.map((tweet) => {
-            return (
-              <Post
-                tweet={tweet}
-                userBookmarks={bookmarksSet}
-                userFollowing={followingSet}
-                key={uniqid()}
-              />
-            );
-          })}
+          <div id="tweets">
+            {tweets.map((tweet) => {
+              return (
+                <Post
+                  tweet={tweet}
+                  userBookmarks={bookmarksSet}
+                  userFollowing={followingSet}
+                  userLikes={likesSet}
+                  key={uniqid()}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </CSSTransitionGroup>
+      </CSSTransition>
+    </TransitionGroup>
   );
 };
 

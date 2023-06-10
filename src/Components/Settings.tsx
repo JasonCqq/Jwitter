@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/Settings.scss";
-import { CSSTransitionGroup } from "react-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import { useGlobalContext } from "./AuthContext";
 import { getFirestore, app, doc, getDoc } from "../Firebase.js";
 
@@ -84,34 +84,30 @@ const Settings = () => {
   };
 
   return (
-    <CSSTransitionGroup
-      transitionName="example"
-      transitionAppear={true}
-      transitionAppearTimeout={1000}
-      transitionEnter={true}
-      transitionLeave={true}
-    >
-      <div className="main-settings">
-        <h1>Your Account Settings</h1>
-        <div id="settings-wrapper">
-          <div className="settings-container">
-            {loaded ? displayUserData() : null}
-            <div className="settings-item">
-              <h3>Change Your Password</h3>
-              <p>Change your password at any time</p>
-            </div>
-            <div className="settings-item">
-              <h3>Contact Jwitter</h3>
-              <p>Email Jwitter for support</p>
-            </div>
-            <div className="settings-item">
-              <h3>Deactivate your account</h3>
-              <p>Close your account</p>
+    <TransitionGroup>
+      <CSSTransition classNames="example" appear={true} timeout={1000}>
+        <div className="main-settings">
+          <h1>Your Account Settings</h1>
+          <div id="settings-wrapper">
+            <div className="settings-container">
+              {loaded ? displayUserData() : null}
+              <div className="settings-item">
+                <h3>Change Your Password</h3>
+                <p>Change your password at any time</p>
+              </div>
+              <div className="settings-item">
+                <h3>Contact Jwitter</h3>
+                <p>Email Jwitter for support</p>
+              </div>
+              <div className="settings-item">
+                <h3>Deactivate your account</h3>
+                <p>Close your account</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </CSSTransitionGroup>
+      </CSSTransition>
+    </TransitionGroup>
   );
 };
 

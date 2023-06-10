@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/FollowPop.scss";
 import { getFirestore, app, collection, getDoc, doc } from "../Firebase.js";
-import { CSSTransitionGroup } from "react-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import uniqid from "uniqid";
 import { RxCross2 } from "react-icons/rx";
 import { followUser, unfollowUser } from "./UtilFunctions";
@@ -66,31 +66,27 @@ const FollowPop: React.FC<FollowProps> = (props) => {
   }, []);
 
   return (
-    <CSSTransitionGroup
-      transitionName="example"
-      transitionAppear={true}
-      transitionAppearTimeout={1000}
-      transitionEnter={true}
-      transitionLeave={true}
-    >
-      <div className="follow-container">
-        <RxCross2 size={25} className="exitButton" onClick={() => close()} />
-        {users?.map((dat) => {
-          return (
-            <div className="user" key={uniqid()}>
-              <div>
-                <Link to={`/profile/${dat.userID}`}>
-                  <img className="userPfp" src={dat.photoURL}></img>
-                  <p>{dat.username}</p>
-                </Link>
-              </div>
+    <TransitionGroup>
+      <CSSTransition classNames="example" appear={true} timeout={1000}>
+        <div className="follow-container">
+          <RxCross2 size={25} className="exitButton" onClick={() => close()} />
+          {users?.map((dat) => {
+            return (
+              <div className="user" key={uniqid()}>
+                <div>
+                  <Link to={`/profile/${dat.userID}`}>
+                    <img className="userPfp" src={dat.photoURL}></img>
+                    <p>{dat.username}</p>
+                  </Link>
+                </div>
 
-              <button>Message</button>
-            </div>
-          );
-        })}
-      </div>
-    </CSSTransitionGroup>
+                <button>Message</button>
+              </div>
+            );
+          })}
+        </div>
+      </CSSTransition>
+    </TransitionGroup>
   );
 };
 

@@ -22,7 +22,7 @@ import {
   getDoc,
   setDoc,
 } from "../Firebase.js";
-import { CSSTransitionGroup } from "react-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 type UserData = {
   settings: {
@@ -176,77 +176,73 @@ const TweetPopUp = () => {
   };
 
   return (
-    <CSSTransitionGroup
-      transitionName="example"
-      transitionAppear={true}
-      transitionAppearTimeout={1000}
-      transitionEnter={true}
-      transitionLeave={true}
-    >
-      <div id="tweetPopUp">
-        <div className="tweet-container">
-          <RxCross2
-            size={50}
-            className="tweet-container-exit"
-            onClick={() => (tweetWindow ? openTweetWindow() : null)}
-          />
+    <TransitionGroup>
+      <CSSTransition classNames="example" appear={true} timeout={1000}>
+        <div id="tweetPopUp">
+          <div className="tweet-container">
+            <RxCross2
+              size={50}
+              className="tweet-container-exit"
+              onClick={() => (tweetWindow ? openTweetWindow() : null)}
+            />
 
-          <div className="tweet-container-middle">
-            <img
-              src={
-                userData?.settings?.photoURL ??
-                "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
-              }
-            ></img>
-            <form>
-              <textarea
-                placeholder="Write your tweet..."
-                maxLength={500}
-                required
-                id="tweetText"
-              ></textarea>
-            </form>
-          </div>
+            <div className="tweet-container-middle">
+              <img
+                src={
+                  userData?.settings?.photoURL ??
+                  "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
+                }
+              ></img>
+              <form>
+                <textarea
+                  placeholder="Write your tweet..."
+                  maxLength={500}
+                  required
+                  id="tweetText"
+                ></textarea>
+              </form>
+            </div>
 
-          <div id="tweetImageContainer"></div>
+            <div id="tweetImageContainer"></div>
 
-          <div className="tweet-container-bottom">
-            <label htmlFor="tweetFile">
-              <FiImage
-                size={30}
-                color="#7856ff"
-                className="tweet-container-submit-image"
-              />
-            </label>
-            <input
-              name="tweetFile"
-              type="file"
-              id="tweetFile"
-              accept="image/*"
-              onChange={previewImage}
-              multiple
-            ></input>
+            <div className="tweet-container-bottom">
+              <label htmlFor="tweetFile">
+                <FiImage
+                  size={30}
+                  color="#7856ff"
+                  className="tweet-container-submit-image"
+                />
+              </label>
+              <input
+                name="tweetFile"
+                type="file"
+                id="tweetFile"
+                accept="image/*"
+                onChange={previewImage}
+                multiple
+              ></input>
 
-            <AiOutlineFileGif size={30} color="#7856ff72" />
-            <BsEmojiSmile size={30} color="#7856ff72" />
-            <HiOutlineLocationMarker size={30} color="#7856ff72" />
-            <SlCalender size={30} color="#7856ff72" />
+              <AiOutlineFileGif size={30} color="#7856ff72" />
+              <BsEmojiSmile size={30} color="#7856ff72" />
+              <HiOutlineLocationMarker size={30} color="#7856ff72" />
+              <SlCalender size={30} color="#7856ff72" />
 
-            {loading ? (
-              <p className="tweet-container-button">Submitting...</p>
-            ) : (
-              <button
-                onClick={() => submitTweetFunction()}
-                type="submit"
-                className="tweet-container-button"
-              >
-                Tweet
-              </button>
-            )}
+              {loading ? (
+                <p className="tweet-container-button">Submitting...</p>
+              ) : (
+                <button
+                  onClick={() => submitTweetFunction()}
+                  type="submit"
+                  className="tweet-container-button"
+                >
+                  Tweet
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </CSSTransitionGroup>
+      </CSSTransition>
+    </TransitionGroup>
   );
 };
 

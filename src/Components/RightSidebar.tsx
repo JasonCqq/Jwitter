@@ -5,7 +5,7 @@ import { FiEye } from "react-icons/fi";
 import { useAuthentication } from "./AuthWindows";
 import { LogInContext } from "./Routeswitch";
 import { useGlobalContext } from "./AuthContext";
-import { CSSTransitionGroup } from "react-transition-group";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 import uniqid from "uniqid";
 
 interface Article {
@@ -94,31 +94,27 @@ const RightSidebar = () => {
   };
 
   return (
-    <CSSTransitionGroup
-      transitionName="example"
-      transitionAppear={true}
-      transitionAppearTimeout={1000}
-      transitionEnter={true}
-      transitionLeave={true}
-    >
-      <div className="right-sidebar">
-        {user ? trending() : signUp()}
+    <TransitionGroup>
+      <CSSTransition classNames="example" appear={true} timeout={1000}>
+        <div className="right-sidebar">
+          {user ? trending() : signUp()}
 
-        <div className="footer-notes">
-          <div>
-            <p>Terms of Service</p>
-            <p>Privacy Policy</p>
-            <p>Cookie Policy</p>
-          </div>
-          <div>
-            <p>Accessibility</p>
-            <p>Ads Info</p>
-            <p>About Us</p>
-            <p>More...</p>
+          <div className="footer-notes">
+            <div>
+              <p>Terms of Service</p>
+              <p>Privacy Policy</p>
+              <p>Cookie Policy</p>
+            </div>
+            <div>
+              <p>Accessibility</p>
+              <p>Ads Info</p>
+              <p>About Us</p>
+              <p>More...</p>
+            </div>
           </div>
         </div>
-      </div>
-    </CSSTransitionGroup>
+      </CSSTransition>
+    </TransitionGroup>
   );
 };
 
