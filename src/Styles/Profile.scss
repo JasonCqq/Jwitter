@@ -1,7 +1,7 @@
 .main-profile {
   height: auto;
   width: max(600px);
-  margin-left: 25vw;
+  margin-left: 30vw;
   margin-right: 25vw;
   background-color: #15202b;
   border-left: 1px solid #38444d;
@@ -79,11 +79,11 @@
         font-size: 15px;
       }
 
-      div {
+      .profile-description-div {
         display: flex;
-        gap: 5px;
+        gap: 25px;
         align-items: flex-end;
-        margin-top: 1vh;
+        margin-top: 5vh;
 
         p {
           font-weight: 600;

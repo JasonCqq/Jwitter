@@ -1,0 +1,73 @@
+.follow-container {
+  position: fixed;
+  height: 65vh;
+  width: max(350px);
+  border-radius: 50px;
+  margin-left: 40vw;
+  background-color: #0f1820;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  color: white;
+  gap: 25px;
+  overflow-y: scroll;
+
+  .exitButton {
+    margin-left: auto;
+    margin-right: 5%;
+    margin-top: 5%;
+    &:hover {
+      background-color: #7856ff1e;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+  }
+
+  .user {
+    display: flex;
+    height: 15%;
+    width: 86%;
+    border-bottom: 1px solid #8b98a5;
+    margin-left: 5%;
+
+    button {
+      background-color: #7856ff;
+      border: none;
+      margin-left: auto;
+      font-weight: bold;
+      color: white;
+      border-radius: 50px;
+      width: 5vw;
+      height: 35%;
+
+      &:hover {
+        cursor: not-allowed;
+      }
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      font-weight: bold;
+      gap: 10px;
+
+      img {
+        width: 50px;
+        height: 50px;
+        margin-top: 0;
+      }
+
+      a {
+        color: white;
+        &:hover {
+          color: #7856ff;
+        }
+      }
+    }
+  }
+}

@@ -261,8 +261,13 @@ table {
         margin-left: 5vw;
       }
 
-      .signOutButton {
-        font-size: 10px;
+      .profile-buttons {
+        .signout-icon {
+          display: none;
+        }
+        .signOutButton {
+          font-size: 10px;
+        }
       }
 
       a {
@@ -290,7 +295,7 @@ table {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1353px) {
   body {
     #sidebar {
       font-size: 15px;

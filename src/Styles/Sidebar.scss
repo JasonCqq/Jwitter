@@ -5,6 +5,8 @@ nav {
   left: 0;
   height: 100vh;
   width: 25vw;
+  z-index: 9998;
+  background-color: #15202b;
 }
 
 #sidebar {
@@ -104,12 +106,6 @@ nav {
         margin-left: 1vw;
       }
 
-      .user-handle {
-        font-weight: lighter;
-        font-size: 0.75rem;
-        width: 3vw;
-      }
-
       .profile-avatar {
         border-radius: 50px;
         height: 50px;
@@ -135,6 +131,11 @@ nav {
         cursor: pointer;
         color: #7856ff;
       }
+    }
+
+    .signout-icon:hover {
+      cursor: pointer;
+      color: #7856ff;
     }
   }
 }

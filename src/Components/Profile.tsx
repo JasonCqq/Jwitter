@@ -27,6 +27,8 @@ import {
 } from "./UtilFunctions";
 import { User } from "firebase/auth";
 import Loading from "./Loading";
+import FollowPop from "./FollowingPop";
+
 type UserData = {
   settings: {
     created: string;
@@ -58,14 +60,12 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
 
   const [tweets, setTweets] = useState<Tweet[]>([]);
-
   const [userData, setUserData] = useState<UserData>();
   const [userProfile, setUserProfile] = useState<string>();
 
   //Follow status for button
   const [followed, setFollowed] = useState<boolean>();
-
-  //Set References
+  //Profile and the browsing user's Set References data
   const [followingSet, setFollowingSet] = useState<Set<string>>(
     new Set<string>()
   );
@@ -78,6 +78,15 @@ const Profile = () => {
   const [userBrowsingFollowing, setUserBrowsingFollowing] = useState<
     Set<string>
   >(new Set<string>());
+
+  const [buttonClicked, setButtonClicked] = useState<string>();
+  const handleClick = (value: string) => {
+    setButtonClicked(value);
+  };
+
+  const closeWindow = () => {
+    setButtonClicked(undefined);
+  };
 
   //Profile Following Reference Number
   const createProfileFollowingSet = async () => {
@@ -275,16 +284,34 @@ const Profile = () => {
             <h1>{userData?.settings.username}</h1>
             <p>A Jwitter User (Joined {userData?.settings.created})</p>
 
-            <div>
+            <div className="profile-description-div">
               <div>
-                <p className="profile-follows">{followerSet.size}</p>
+                <p
+                  onClick={() => handleClick("followers")}
+                  className="profile-follows"
+                >
+                  {followerSet.size}
+                </p>
                 <span>Followers</span>
               </div>
               <div>
-                <p className="profile-follows">{followingSet.size}</p>
+                <p
+                  onClick={() => handleClick("following")}
+                  className="profile-follows"
+                >
+                  {followingSet.size}
+                </p>
                 <span>Following</span>
               </div>
             </div>
+
+            {buttonClicked && (
+              <FollowPop
+                tab={buttonClicked || "N/A"}
+                profileID={userProfile || ""}
+                close={closeWindow}
+              />
+            )}
           </div>
 
           <h3>Tweets</h3>

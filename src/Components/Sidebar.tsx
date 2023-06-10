@@ -84,7 +84,11 @@ const Sidebar = () => {
 
           {reveal && (
             <div className="profile-buttons">
-              <MdLogout size={30} />
+              <MdLogout
+                onClick={() => signOutUser()}
+                size={30}
+                className="signout-icon"
+              />
               <button onClick={() => signOutUser()} className="signOutButton">
                 Sign Out
               </button>
