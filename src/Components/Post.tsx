@@ -97,7 +97,9 @@ const Post: React.FC<PostProps> = (props) => {
   }, [userBookmarks, userFollowing, userLikes, tweet]);
 
   useEffect(() => {
-    countComments();
+    const fetch = async () => {
+      await countComments();
+    };
   }, []);
 
   //Add/Delete bookmark

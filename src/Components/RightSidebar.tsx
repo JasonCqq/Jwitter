@@ -23,22 +23,23 @@ const RightSidebar = () => {
 
   //Fetches 4 Articles from newsapi and display
   useEffect(() => {
-    const url =
-      "https://newsapi.org/v2/top-headlines?" +
-      "country=us&" +
-      `apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
-    const req = new Request(url);
-    fetch(req)
-      .then((response) => response.json())
-      .then((data: { articles: Article[] }) =>
-        setHotTopics([
-          data.articles[0],
-          data.articles[1],
-          data.articles[2],
-          data.articles[3],
-        ])
-      );
-  }, []);
+    if (user) {
+      const url =
+        "https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=us&max=4&apikey=" +
+        `${process.env.REACT_APP_NEWS_API_KEY}`;
+
+      fetch(url)
+        .then((response) => response.json())
+        .then((data: { articles: Article[] }) =>
+          setHotTopics([
+            data.articles[0],
+            data.articles[1],
+            data.articles[2],
+            data.articles[3],
+          ])
+        );
+    }
+  }, [user]);
 
   const signUp = () => {
     return (
@@ -86,7 +87,7 @@ const RightSidebar = () => {
                 </div>
               );
             })}
-            <p style={{ paddingLeft: "7px" }}>News source from newsapi.org</p>
+            <p style={{ paddingLeft: "7px" }}>News source from gnews.io</p>
           </div>
         </div>
       </div>

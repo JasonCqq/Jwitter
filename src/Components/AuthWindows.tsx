@@ -183,9 +183,7 @@ const SignInWindow = () => {
     e.preventDefault();
 
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-      })
+      .then((userCredentials) => {})
       .then(() => closeWindows())
       .catch((error) => {
         const errorCode = error.code;

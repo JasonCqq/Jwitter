@@ -302,6 +302,10 @@ export const createComment = async (
   text: string,
   photoURL: string
 ) => {
+  if (!user) {
+    return;
+  }
+
   //Timestamp
   const date = new Date();
   const year = date.getFullYear();

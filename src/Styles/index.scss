@@ -282,6 +282,10 @@ table {
       }
     }
 
+    .comments-container {
+      width: max(400px) !important;
+    }
+
     .follow-container {
       .user {
         width: 50%;
