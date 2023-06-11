@@ -80,6 +80,9 @@ const Post: React.FC<PostProps> = (props) => {
 
   //Add/Delete bookmark
   const bookmarkTweet = async (tweetID: string) => {
+    if (!user) {
+      return;
+    }
     //Add/Delete bookmark ID
     if (userBookmarks.has(tweetID)) {
       await updateDoc(doc(db, "users", `${user?.uid}`, "bookmarks", "tweets"), {
@@ -96,10 +99,12 @@ const Post: React.FC<PostProps> = (props) => {
 
   //Remove post from database
   const deletePost = async () => {
-    await deleteDoc(doc(db, "allTweets", `${tweet.docID}`));
-    await deleteDoc(
-      doc(db, "users", `${user?.uid}`, "tweets", `${tweet.docID}`)
-    );
+    if (user) {
+      await deleteDoc(doc(db, "allTweets", `${tweet.docID}`));
+      await deleteDoc(
+        doc(db, "users", `${user?.uid}`, "tweets", `${tweet.docID}`)
+      );
+    }
   };
 
   const moreOptions = () => {

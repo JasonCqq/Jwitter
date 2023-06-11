@@ -11,7 +11,7 @@ import {
 } from "../Firebase.js";
 import { User } from "firebase/auth";
 import uniqid from "uniqid";
-import { increment } from "firebase/firestore";
+import { addDoc, increment } from "firebase/firestore";
 
 //Returns images from tweet
 interface Image {
@@ -102,6 +102,10 @@ export const displayData = async (db: any, user: User) => {
 
 //otherUser = other user's ID
 export const followUser = async (db: any, user: User, otherUser: string) => {
+  if (!user) {
+    return;
+  }
+
   //Add to user's following
   const usersCollectionRef = collection(db, "users");
   const userFollowing = doc(
@@ -150,6 +154,10 @@ export const followUser = async (db: any, user: User, otherUser: string) => {
 };
 export const unfollowUser = async (db: any, user: User, otherUser: string) => {
   //Remove from user's following
+  if (!user) {
+    return;
+  }
+
   const usersCollectionRef = collection(db, "users");
   const userFollowing = doc(
     usersCollectionRef,
@@ -180,7 +188,7 @@ export const unfollowUser = async (db: any, user: User, otherUser: string) => {
     followers: arrayRemove(`${user?.uid}`),
   });
 };
-
+//Creates Likes Set Reference
 export const createLikesSet = async (db: any, user: User) => {
   const userRef = collection(db, "users");
   const likesRef = doc(userRef, `${user?.uid}`, "likes", "tweets");
@@ -204,6 +212,9 @@ export const likePost = async (
   postID: string,
   otherUserID: string
 ) => {
+  if (!user) {
+    return;
+  }
   //Add to user's likes
   const usersCollectionRef = collection(db, "users");
   const userLikes = doc(usersCollectionRef, `${user?.uid}`, "likes", "tweets");
@@ -247,6 +258,9 @@ export const unlikePost = async (
   postID: string,
   otherUserID: string
 ) => {
+  if (!user) {
+    return;
+  }
   //Remove from user's likes
   const usersCollectionRef = collection(db, "users");
   const userLikes = doc(usersCollectionRef, `${user?.uid}`, "likes", "tweets");
@@ -254,6 +268,7 @@ export const unlikePost = async (
   if (!userLikesSnap.exists()) {
     return;
   }
+
   await updateDoc(doc(usersCollectionRef, `${user?.uid}`, "likes", "tweets"), {
     likes: arrayRemove(postID),
   });
@@ -276,4 +291,61 @@ export const unlikePost = async (
   }
   const userLikes2Ref = userLikesSnap2.ref;
   await updateDoc(userLikes2Ref, { likes: increment(-1) });
+};
+
+export const createComment = async (
+  db: any,
+  user: User,
+  userName: string,
+  postID: string,
+  otherUserID: string,
+  text: string,
+  photoURL: string
+) => {
+  //Timestamp
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute =
+    date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+  const AMPM = hour < 12 ? "AM" : "PM";
+  const newHour = hour < 12 ? hour : hour - 12;
+
+  const mainRef = collection(db, "allTweets");
+  const docRef = doc(mainRef, postID);
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) {
+    return;
+  }
+
+  //Add to "allTweets"
+  await addDoc(collection(docRef, "comments"), {
+    author: user.uid,
+    authorUsername: userName,
+    authorPhoto: photoURL,
+    text: text,
+    time: `${newHour}:${minute} ${AMPM}, ${month}/${day}/${year}`,
+  });
+
+  //Add to the tweeter's tweet collection
+  const userRef = doc(db, "users", otherUserID);
+  const userSnap = await getDoc(userRef);
+  if (!userSnap.exists()) {
+    return;
+  }
+  const tweetRef = doc(userRef, "tweets", postID);
+  const tweetSnap = await getDoc(tweetRef);
+  if (!tweetSnap.exists()) {
+    return;
+  }
+
+  await addDoc(collection(tweetRef, "comments"), {
+    author: user.uid,
+    authorUsername: userName,
+    authorPhoto: photoURL,
+    text: text,
+    time: `${newHour}:${minute} ${AMPM}, ${month}/${day}/${year}`,
+  });
 };

@@ -14,6 +14,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
   setDoc,
+  getDocs,
 } from "../Firebase.js";
 import uniqid from "uniqid";
 import { useParams } from "react-router-dom";
@@ -130,6 +131,34 @@ const Profile = () => {
     setFollowerSet(userFollowerSet as Set<string>);
   };
 
+  const getProfileTweets = async (id: string) => {
+    if (!user) {
+      return;
+    }
+
+    const userRef = collection(db, "users");
+    const collectionSnapshot = await getDocs(collection(userRef, id, "tweets"));
+    const queries: any = [];
+
+    collectionSnapshot.forEach((doc) => {
+      const data = {
+        key: uniqid(),
+        ...doc.data(),
+      };
+      queries.push(data);
+    });
+
+    //Sort tweets by time
+    const newQueries = queries.sort(
+      (a: { timestamp: string }, b: { timestamp: string }) => {
+        const timestampA = new Date(a.timestamp).getTime();
+        const timestampB = new Date(b.timestamp).getTime();
+        return timestampB - timestampA;
+      }
+    );
+    setTweets(newQueries);
+  };
+
   useEffect(() => {
     if (user && user.uid && followerSet.has(user.uid)) {
       setFollowed(true);
@@ -143,13 +172,11 @@ const Profile = () => {
       const fetchData = async () => {
         setLoading(true);
 
-        const [tweets, bookmarks, likes] = await Promise.all([
-          displayData(db, user as User),
+        const [bookmarks, likes] = await Promise.all([
           createBookmarksSet(db, user as User),
           createLikesSet(db, user as User),
         ]);
 
-        setTweets(tweets);
         setBookmarksSet(bookmarks);
         setLikesSet(likes);
 
@@ -157,6 +184,7 @@ const Profile = () => {
           getUserData(),
           createProfileFollowingSet(),
           createBrowsingUserFollowing(),
+          getProfileTweets(userProfile),
         ]);
         setLoading(false);
       };
@@ -245,7 +273,7 @@ const Profile = () => {
                   "https://firebasestorage.googleapis.com/v0/b/jwitter-c2e99.appspot.com/o/abstract-user-flat-4.svg?alt=media&token=1a86b625-7555-4b52-9f0f-0cd89bffeeb6"
                 }
               ></img>
-              {userProfile === user?.uid ? (
+              {userProfile === user?.uid && user ? (
                 <div className="editPhoto button">
                   <input
                     id="pfpFile"
@@ -266,7 +294,7 @@ const Profile = () => {
                 >
                   Unfollow
                 </button>
-              ) : (
+              ) : user ? (
                 <button
                   className="button"
                   onClick={async () => {
@@ -276,7 +304,7 @@ const Profile = () => {
                 >
                   Follow
                 </button>
-              )}
+              ) : null}
             </div>
 
             <div className="profile-description">
@@ -304,7 +332,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              {buttonClicked && (
+              {buttonClicked && user && (
                 <FollowPop
                   tab={buttonClicked || "N/A"}
                   profileID={userProfile || ""}
