@@ -15,6 +15,7 @@ import {
   deleteDoc,
   onSnapshot,
   collection,
+  getDocs,
 } from "../Firebase.js";
 import { useGlobalContext } from "./AuthContext";
 import "../Styles/Post.scss";
@@ -27,6 +28,7 @@ import {
 } from "./UtilFunctions";
 import { User } from "firebase/auth";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+import CommentPop from "./CommentPop";
 
 interface Tweet {
   comments: number;
@@ -57,6 +59,22 @@ const Post: React.FC<PostProps> = (props) => {
   const [followed, setFollowed] = useState<boolean>();
   const [liked, setLiked] = useState<boolean>();
 
+  const [openComments, setOpenComments] = useState<boolean>(false);
+  const toggleComments = () => {
+    setOpenComments((prevToggle) => !prevToggle);
+  };
+
+  const [commentsCount, setCommentsCount] = useState<number>(0);
+
+  const countComments = async () => {
+    const commentsRef = collection(db, "allTweets", tweet.docID, "comments");
+    const commentsSnap = await getDocs(commentsRef);
+    if (commentsSnap.empty) {
+      return;
+    }
+    setCommentsCount(commentsSnap.size);
+  };
+
   //Set bookmark status
   useEffect(() => {
     if (userBookmarks.has(tweet.docID)) {
@@ -77,6 +95,10 @@ const Post: React.FC<PostProps> = (props) => {
       setLiked(false);
     }
   }, [userBookmarks, userFollowing, userLikes, tweet]);
+
+  useEffect(() => {
+    countComments();
+  }, []);
 
   //Add/Delete bookmark
   const bookmarkTweet = async (tweetID: string) => {
@@ -185,8 +207,18 @@ const Post: React.FC<PostProps> = (props) => {
                 className="tweet-comment"
                 size={17.5}
                 color="#7856ff"
+                onClick={() => {
+                  toggleComments();
+                }}
               />{" "}
-              <p>{tweet?.comments}</p>
+              <p>{commentsCount}</p>
+              {openComments && (
+                <CommentPop
+                  tweetID={tweet.docID}
+                  tweetUserID={tweet.userID}
+                  close={toggleComments}
+                />
+              )}
             </div>
 
             <div className="tweet-stat-container">

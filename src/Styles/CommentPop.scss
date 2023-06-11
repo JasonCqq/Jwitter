@@ -1,0 +1,148 @@
+.comments-container {
+  position: fixed;
+  height: 90vh;
+  width: max(600px) !important;
+  border-radius: 50px;
+  margin-left: 30vw;
+  background-color: #0f1820;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  color: white;
+  gap: 25px;
+  overflow-y: scroll;
+  align-items: flex-start;
+
+  .exitButton {
+    margin-left: auto;
+    margin-right: 5%;
+    margin-top: 5%;
+    &:hover {
+      background-color: #7856ff1e;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+  }
+
+  .main-tweet {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    margin-left: 5vw;
+
+    .main-tweet-handle {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      padding-left: 10px;
+      gap: 10px;
+    }
+
+    .main-tweet-stats {
+      padding: 10px 10px;
+      margin-left: 4vw;
+    }
+
+    div {
+      display: flex;
+      width: 500px;
+    }
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50px;
+    }
+  }
+
+  .tweet-comments {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10vw;
+    width: 400px !important;
+
+    .comments {
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      max-height: 250px;
+      overflow-y: auto;
+      width: 475px;
+
+      .comment {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .comments-handle {
+          display: flex;
+          width: 400px;
+          align-items: center;
+          gap: 10px;
+
+          h1 {
+            font-size: 0.65rem;
+          }
+
+          img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50px;
+          }
+        }
+
+        .comments-stats {
+          display: flex;
+          margin-left: 5vw;
+          width: 400px;
+          span {
+            font-size: 0.6rem;
+          }
+        }
+      }
+    }
+  }
+
+  .post-comment {
+    margin-left: 10vw;
+    margin-top: auto;
+    margin-bottom: 10vh;
+    .comment-button {
+      border: none;
+      color: white;
+      background-color: #7856ff;
+      font-weight: bold;
+      border-radius: 50px;
+      padding: 10px;
+      font-size: 0.9rem;
+
+      &:hover {
+        cursor: pointer;
+        background-color: #7856ffa3;
+      }
+    }
+
+    textarea {
+      resize: none;
+      font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+      border: none;
+      color: white;
+      background: transparent;
+      font-weight: 600;
+      font-size: 1.2rem;
+      height: 100%;
+      width: 400px;
+
+      &:focus {
+        outline: none;
+        border: none;
+      }
+    }
+  }
+}
