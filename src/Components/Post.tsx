@@ -94,13 +94,13 @@ const Post: React.FC<PostProps> = (props) => {
     } else if (!userLikes.has(tweet.docID)) {
       setLiked(false);
     }
-  }, [userBookmarks, userFollowing, userLikes, tweet]);
 
-  useEffect(() => {
     const fetch = async () => {
       await countComments();
     };
-  }, []);
+
+    fetch();
+  }, [userBookmarks, userFollowing, userLikes, tweet]);
 
   //Add/Delete bookmark
   const bookmarkTweet = async (tweetID: string) => {
