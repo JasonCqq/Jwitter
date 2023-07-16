@@ -132,10 +132,6 @@ const Profile = () => {
   };
 
   const getProfileTweets = async (id: string) => {
-    if (!user) {
-      return;
-    }
-
     const userRef = collection(db, "users");
     const collectionSnapshot = await getDocs(collection(userRef, id, "tweets"));
     const queries: any = [];

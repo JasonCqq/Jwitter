@@ -4,7 +4,6 @@ import { getFirestore, app, collection, getDoc, doc } from "../Firebase.js";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import uniqid from "uniqid";
 import { RxCross2 } from "react-icons/rx";
-import { followUser, unfollowUser } from "./UtilFunctions";
 import { Link } from "react-router-dom";
 
 interface FollowProps {
